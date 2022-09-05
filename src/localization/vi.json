@@ -1,0 +1,21 @@
+{
+    "welcome_to_app": "Chào mừng bạn đã đến với",
+    "app_name": "CRM Next Generation",
+    "username": "Tên đăng nhập",
+    "username_placeholder": "Nhập tên đăng nhập",
+    "password": "Mật khẩu",
+    "password_placeholder": "Nhập mật khẩu",
+    "instruction": "Hướng dẫn",
+    "login": "Đăng nhập",
+    "email": "Email",
+    "register": "Đăng ký",
+    "logout": "Đăng xuất",
+    "forgetPassword": "Quên mật khẩu",
+    "account_disable": "Tài khoản tạm khóa do nhập sai quá 5 lần.\nVui lòng liên hệ quản trị",
+    "invalid_mail_or_password": "• Tên đăng nhập hoặc mật khẩu không chính xác.\n• Tài khoản sẽ bị khoá nếu đăng nhập sai quá 5 lần.",
+    "close": "Đóng",
+    "network_error": "Lỗi kết nối mạng, vui lòng kiểm tra lại!",
+    "user":" Cá nhân",
+    "findAwayTeam":"Cáp đội",
+    "home":" Trang chủ"
+  }
