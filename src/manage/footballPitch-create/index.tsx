@@ -18,7 +18,25 @@ const FootballPitchCreate: React.FC = () => {
             mode="outlined"
             maxLength={100}
             dense
-            label="Địa chỉ thường trú"
+            label="Tên sân bóng"
+            //value={props.values.address}
+            //onChangeText={props.handleChange('address')}
+          />
+        </AppView>
+        <AppView style={styles.txtSlotTimeView}>
+          <TextInput />
+          <Text>{'h ----'}</Text>
+          <TextInput />
+        </AppView>
+        <AppView style={styles.formInput}>
+          <TextInput
+            outlineColor={'gray'}
+            style={styles.textInputStyle}
+            placeholder={'SDS'}
+            mode="outlined"
+            maxLength={100}
+            dense
+            label="Thông tin chi tiết sân bóng"
             //value={props.values.address}
             //onChangeText={props.handleChange('address')}
           />
@@ -31,24 +49,12 @@ const FootballPitchCreate: React.FC = () => {
             mode="outlined"
             maxLength={100}
             dense
-            label="Địa chỉ thường trú"
+            label="Địa chỉ sân bóng"
             //value={props.values.address}
             //onChangeText={props.handleChange('address')}
           />
         </AppView>
-        <AppView style={styles.formInput}>
-          <TextInput
-            outlineColor={'gray'}
-            style={styles.textInputStyle}
-            placeholder={'SDS'}
-            mode="outlined"
-            maxLength={100}
-            dense
-            label="Địa chỉ thường trú"
-            //value={props.values.address}
-            //onChangeText={props.handleChange('address')}
-          />
-        </AppView>
+
         <UploadFile />
       </AppView>
     </SafeAreaView>
@@ -69,6 +75,12 @@ const styles = StyleSheet.create({
   formInput: {
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 5, // edit here
+  },
+  txtSlotTimeView: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     marginVertical: 5, // edit here
   },
