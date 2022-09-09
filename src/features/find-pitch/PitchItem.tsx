@@ -1,7 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {
-    Dimensions,
+  Dimensions,
   ImageBackground,
   Platform,
   StyleSheet,
@@ -9,12 +9,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {Buffer} from 'buffer';
 interface Props {
   item: any;
 }
 const PitchItem: React.FC<Props> = ({item}) => {
   const navigation = useNavigation();
-  const base64Image = `data:image/png;base64,${item.image}`;
+  const base64Image = `data:image/png;base64,${item.image.image.data}`;
   return (
     <TouchableOpacity
       key={item._id}

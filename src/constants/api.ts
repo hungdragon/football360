@@ -30,6 +30,7 @@ const API_METHOD = {
   },
   MS_FOOTBALL: {
     GET_PITCH_LIST: 'api/pitch-list',
+    ADD_PITCH: getFullMethod(config.FOOTBALL, '/add-pitch', ''),
     BOOK_FOOTBALL_TIME_LIST: 'api/football-pitch-time-list',
     FOOTBALL_BOOKING: 'api/football-booking',
     FOOTBALL_BILL: getFullMethod(config.FOOTBALL, '/create-bill', ''),

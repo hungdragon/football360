@@ -13,6 +13,7 @@ import UserInfo from 'features/user-Info/UserInfo';
 import FindPitch from 'features/find-pitch';
 import TeamList from 'features/find-away-team/TeamList';
 import FootballPitchCreate from 'manage/footballPitch-create';
+import Dashboard from 'manage/dashboard';
 //Params
 export type AppTabParamList = {
   Menu: undefined;
@@ -125,9 +126,10 @@ const BottomManageNavigation: React.FC = () => {
           }}
         />
         <AppTab.Screen
-          name="FindAwayTeam"
-          component={TeamList}
+          name="Dashboard"
+          component={Dashboard}
           options={{
+            headerShown: false,
             title: translate('findAwayTeam'),
             tabBarIcon: () => <AntDesignIcon name="scan1" size={22} />,
           }}

@@ -35,7 +35,7 @@ const UploadFile: React.FC = () => {
   return (
     <AppView style={styles.container}>
       <AppText boldOrLight="bold" style={styles.txtContract}>
-        Hợp đồng đính kèm
+        Ảnh sân bóng đính kèm
       </AppText>
       <TouchableOpacity
         onPress={() => {
