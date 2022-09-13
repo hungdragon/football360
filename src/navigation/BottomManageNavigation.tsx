@@ -8,12 +8,15 @@ import {BackHandler, StyleSheet, View} from 'react-native';
 import {useTheme} from 'react-native-paper';
 import {translate} from 'utils';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {AppError} from 'utils/Utils';
 import UserInfo from 'features/user-Info/UserInfo';
 import FindPitch from 'features/find-pitch';
 import TeamList from 'features/find-away-team/TeamList';
 import FootballPitchCreate from 'manage/footballPitch-create';
 import Dashboard from 'manage/dashboard';
+import {Image} from 'react-native-animatable';
+import {image} from 'assets/icons';
 //Params
 export type AppTabParamList = {
   Menu: undefined;
@@ -93,12 +96,14 @@ const BottomManageNavigation: React.FC = () => {
       style={[styles.container, {backgroundColor: theme.colors.white}]}>
       <AppTab.Navigator>
         <AppTab.Screen
-          name="FootballPitchCreate"
-          component={FootballPitchCreate}
+          name="Dashboard"
+          component={Dashboard}
           options={{
             headerShown: false,
             title: 'dashboard',
-            tabBarIcon: () => <AntDesignIcon name="plus" size={22} />,
+            tabBarIcon: () => (
+              <MaterialCommunityIcons name="view-dashboard" size={22} color={'#0FFF'} />
+            ),
           }}
         />
         <AppTab.Screen
@@ -106,27 +111,19 @@ const BottomManageNavigation: React.FC = () => {
           component={UserInfo}
           options={{
             headerShown: false,
-            title: translate('user'),
+            title: translate('footballManager'),
             tabBarIcon: () => (
-              <View
-                style={{
-                //   backgroundColor: 'red',
-                //   position: 'absolute',
-                //   bottom: 10,
-                //   padding: 10,
-                //   borderRadius: 40,
-                }}>
-                <AntDesignIcon
-                  name="football"
-                  size={30}
-                  style={{color: 'green'}}
+              <View>
+                <Image
+                  source={image.Icon_pitch}
+                  style={{width: 35, height: 35}}
                 />
               </View>
             ),
           }}
         />
         <AppTab.Screen
-          name="Dashboard"
+          name="Dashboards"
           component={Dashboard}
           options={{
             headerShown: false,

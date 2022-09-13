@@ -64,10 +64,30 @@ export type RootStackParamList = {
   //manage
   FootballPitchCreate: undefined;
   BottomManageNavigation: undefined;
+  DrawerNavigation: undefined;
+  Settings: undefined;
+  DrawerStack: undefined;
 };
-
 const RootStack = createNativeStackNavigator<RootStackParamList>();
-
+import {createDrawerNavigator} from '@react-navigation/drawer';
+const Drawer = createDrawerNavigator();
+function DrawerStack() {
+  return (
+    <Drawer.Navigator>
+      {/* <Drawer.Screen name="Home" component={Dashboard} /> */}
+      <Drawer.Screen
+        name="BottomManageNavigation"
+        component={BottomManageNavigation}
+        options={{headerShown: false}}
+      />
+      <Drawer.Screen
+        name="FootballPitchCreate"
+        component={FootballPitchCreate}
+        options={{headerShown: false}}
+      />
+    </Drawer.Navigator>
+  );
+}
 const RootStackNavigation: React.FC = () => {
   //const isDarkMode = useColorScheme() === 'dark';
   const isDarkMode = false;
@@ -153,14 +173,11 @@ const RootStackNavigation: React.FC = () => {
       ) : detailUserInfo?.isAdmin === '1' ? (
         <RootStack.Navigator>
           <RootStack.Group screenOptions={() => groupStackAppTabScreenOptions}>
-            <RootStack.Screen
-              name="BottomManageNavigation"
-              component={BottomManageNavigation}
-            />
-            <RootStack.Screen
+            <RootStack.Screen name="DrawerStack" component={DrawerStack} />
+            {/* <RootStack.Screen
               name="FootballPitchCreate"
               component={FootballPitchCreate}
-            />
+            /> */}
           </RootStack.Group>
         </RootStack.Navigator>
       ) : (

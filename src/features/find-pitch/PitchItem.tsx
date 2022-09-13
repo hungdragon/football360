@@ -33,7 +33,10 @@ const PitchItem: React.FC<Props> = ({item}) => {
         style={styles.pitch_element}>
         <View style={styles.time_block}>
           <View style={styles.styleElementTimeBlock}>
-            <Text style={styles.text_time}>{item?.fullTimeSlot}</Text>
+            <Text
+              style={
+                styles.text_time
+              }>{`${item?.openTime}h - ${item?.closeTime}h`}</Text>
           </View>
 
           {item.km == null || undefined ? null : (
@@ -88,7 +91,7 @@ const PitchItem: React.FC<Props> = ({item}) => {
                 textShadowColor: 'black',
                 textShadowRadius: 4,
               }}>
-              {item?.priceRange}
+              {`${item?.minPrice} - ${item?.maxPrice}`}
             </Text>
           </View>
         </View>
