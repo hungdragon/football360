@@ -76,10 +76,6 @@ PODS:
   - fmt (6.2.1)
   - glog (0.3.5)
   - libevent (2.1.12)
-  - lottie-ios (3.1.9)
-  - lottie-react-native (3.5.0):
-    - lottie-ios (~> 3.1.8)
-    - React
   - OpenSSL-Universal (1.1.1100)
   - RCT-Folly (2021.06.28.00-v2):
     - boost
@@ -302,11 +298,11 @@ PODS:
     - React-Core
   - react-native-image-picker (4.10.0):
     - React-Core
-  - react-native-safe-area-context (4.3.1):
+  - react-native-safe-area-context (4.3.4):
     - RCT-Folly
     - RCTRequired
     - RCTTypeSafety
-    - React
+    - React-Core
     - ReactCommon/turbomodule/core
   - react-native-splash-screen (3.3.0):
     - React-Core
@@ -376,11 +372,20 @@ PODS:
     - React-jsi (= 0.69.3)
     - React-logger (= 0.69.3)
     - React-perflogger (= 0.69.3)
-  - RNCAsyncStorage (1.17.7):
+  - RNCAsyncStorage (1.17.10):
     - React-Core
-  - RNGestureHandler (2.6.0):
+  - RNGestureHandler (2.6.1):
     - React-Core
-  - RNReanimated (2.9.1):
+  - RNImageCropPicker (0.38.0):
+    - React-Core
+    - React-RCTImage
+    - RNImageCropPicker/QBImagePickerController (= 0.38.0)
+    - TOCropViewController
+  - RNImageCropPicker/QBImagePickerController (0.38.0):
+    - React-Core
+    - React-RCTImage
+    - TOCropViewController
+  - RNReanimated (2.10.0):
     - DoubleConversion
     - FBLazyVector
     - FBReactNativeSpec
@@ -407,7 +412,7 @@ PODS:
     - React-RCTText
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (3.15.0):
+  - RNScreens (3.17.0):
     - React-Core
     - React-RCTImage
   - RNVectorIcons (9.2.0):
@@ -434,6 +439,7 @@ PODS:
     - StripeUICore (= 22.5.1)
   - StripeUICore (22.5.1):
     - StripeCore (= 22.5.1)
+  - TOCropViewController (2.6.1)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -466,7 +472,6 @@ DEPENDENCIES:
   - FlipperKit/FlipperKitUserDefaultsPlugin (= 0.125.0)
   - FlipperKit/SKIOSNetworkPlugin (= 0.125.0)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
-  - lottie-react-native (from `../node_modules/lottie-react-native`)
   - OpenSSL-Universal (= 1.1.1100)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
@@ -505,6 +510,7 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
@@ -525,7 +531,6 @@ SPEC REPOS:
     - FlipperKit
     - fmt
     - libevent
-    - lottie-ios
     - OpenSSL-Universal
     - SocketRocket
     - Stripe
@@ -533,6 +538,7 @@ SPEC REPOS:
     - StripeCore
     - StripeFinancialConnections
     - StripeUICore
+    - TOCropViewController
     - YogaKit
 
 EXTERNAL SOURCES:
@@ -548,8 +554,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/React/FBReactNativeSpec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
-  lottie-react-native:
-    :path: "../node_modules/lottie-react-native"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -620,6 +624,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNImageCropPicker:
+    :path: "../node_modules/react-native-image-crop-picker"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -650,8 +656,6 @@ SPEC CHECKSUMS:
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 3d02b25ca00c2d456734d0bcff864cbc62f6ae1a
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
-  lottie-ios: 3a3758ef5a008e762faec9c9d50a39842f26d124
-  lottie-react-native: 1fb4ce21d6ad37dab8343eaff8719df76035bd93
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   RCT-Folly: b9d9fe1fc70114b751c076104e52f3b1b5e5a95a
   RCTRequired: 66822c147facf02f7774af99825e0a31e39df42e
@@ -672,7 +676,7 @@ SPEC CHECKSUMS:
   react-native-geolocation: 69f4fd37650b8e7fee91816d395e62dd16f5ab8d
   react-native-get-random-values: a6ea6a8a65dc93e96e24a11105b1a9c8cfe1d72a
   react-native-image-picker: 4bc9ed38c8be255b515d8c88babbaf74973f91a8
-  react-native-safe-area-context: 6c12e3859b6f27b25de4fee8201cfb858432d8de
+  react-native-safe-area-context: dfe5aa13bee37a0c7e8059d14f72ffc076d120e9
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
   React-perflogger: 39d2ba8cbcac54d1bb1d9a980dab348e96aef467
   React-RCTActionSheet: b1ad907a2c8f8e4d037148ca507b7f2d6ab1c66d
@@ -686,10 +690,11 @@ SPEC CHECKSUMS:
   React-RCTVibration: dd8099eb46e9cee4692934bc8cbe5e9a4f5e8d31
   React-runtimeexecutor: 607eb048e22a16388c908ee1f6644200e8d1e19b
   ReactCommon: af7636436b382db7cde4583bbd642f0978e6e3ed
-  RNCAsyncStorage: d81ee5c3db1060afd49ea7045ad460eff82d2b7d
-  RNGestureHandler: 920eb17f5b1e15dae6e5ed1904045f8f90e0b11e
-  RNReanimated: 2cf7451318bb9cc430abeec8d67693f9cf4e039c
-  RNScreens: 4a1af06327774490d97342c00aee0c2bafb497b7
+  RNCAsyncStorage: 0c357f3156fcb16c8589ede67cc036330b6698ca
+  RNGestureHandler: 28ad20bf02257791f7f137b31beef34b9549f54b
+  RNImageCropPicker: ffbba608264885c241cbf3a8f78eb7aeeb978241
+  RNReanimated: 7faa787e8d4493fbc95fab2ad331fa7625828cfa
+  RNScreens: 0df01424e9e0ed7827200d6ed1087ddd06c493f9
   RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   Stripe: 2b2decd03146e08a350960966d41f3028c2eac29
@@ -698,6 +703,7 @@ SPEC CHECKSUMS:
   StripeCore: 4833738f2ca4336712f279f3c2867a0a7eb67c93
   StripeFinancialConnections: 982115b82af429968d8aa78d329a42ed7ba3feab
   StripeUICore: 08c1efbd7e3c54ee7fa74334a37a1d4c08ba944d
+  TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
   Yoga: 44c64131616253fa83366295acdbce3d14926041
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 

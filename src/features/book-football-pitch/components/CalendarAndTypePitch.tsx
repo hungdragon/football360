@@ -1,53 +1,76 @@
+import {useAppSelector} from 'app/hooks';
+import moment from 'moment';
+import React, {useState} from 'react';
 import {
-  View,
-  StyleSheet,
+  Alert,
   Dimensions,
   Platform,
-  FlatList,
-  ListRenderItemInfo,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import React, {useEffect} from 'react';
 import {useDispatch} from 'react-redux';
 import {
+  setDateTimeBooking,
   setFootballTimeList,
   setId,
   setIsSignFootball,
   setLoading,
-} from './FootballSlice';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import moment from 'moment';
-import 'moment/locale/vi';
-import {FootballApi, FootballTime} from './FootballApi';
-import {useAppSelector} from 'app/hooks';
-import AppHeader from 'components/AppHeader/AppHeader';
-import AppViewWithErrorAndLoading from 'components/view/AppViewWithErrorAndLoading';
-import FootballTimeItem from './components/FootballTimeItem';
-import CalendarAndTypePitch from './components/CalendarAndTypePitch';
-const BookFootballPitch: React.FC = () => {
+  setPitchType,
+} from '../FootballSlice';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {FootballApi} from '../FootballApi';
+import {useTheme} from 'react-native-paper';
+
+const CalendarAndTypePitch: React.FC = () => {
+  const {colors} = useTheme();
   const dispatch = useDispatch();
-  const dataPitch = useAppSelector(
-    state => state.FootballState.FootballTimeData,
-  );
+  const pitchType = useAppSelector(state => state.FootballState.pitchType);
   const pitchName = useAppSelector(state => state.findPitchState.pitchName);
   const pitchId = useAppSelector(state => state.findPitchState.idPitch);
-  const pitchType = useAppSelector(state => state.FootballState.pitchType);
-  const loading = useAppSelector(state => state.FootballState.loading);
   const dateTimeBooking = useAppSelector(
     state => state.FootballState.dateTimeBooking,
   );
-  const dateTime = moment().format('L');
-  const isSignFootball = useAppSelector(
-    state => state.FootballState.isSignFootball,
-  );
-  useEffect(() => {
-    if (!isSignFootball) {
-      callAPI_ONECE();
-    } else {
-      callAPI(pitchType, dateTimeBooking);
-    }
-    callAPI_ONECE();
-  }, [isSignFootball]);
+  const [selectedId, setSelectedId] = useState(0);
+  const [currentDay, setCurrentDay] = useState(moment());
+  const [visible, setVisible] = React.useState(false);
+  const size = 6;
+  let COLOR__NEXT = colors.sonicSilver;
+  let COLOR__PREV = colors.sonicSilver;
+  let COLOR__DISABLE = colors.lightGrey;
 
+  if (selectedId === 0) {
+    COLOR__PREV = selectedId ? COLOR__NEXT : COLOR__PREV;
+  }
+  if (selectedId === size - 1) {
+    COLOR__NEXT = selectedId ? COLOR__DISABLE : 'red';
+  }
+  //NEXT DAY
+  const nextDay = () => {
+    setSelectedId(selectedId === size - 1 ? size - 1 : selectedId + 1);
+    if (selectedId >= 5) {
+      console.log(Alert.alert('Không thể Next được !'));
+    } else {
+      setCurrentDay(moment(currentDay).add(1, 'days')); // display on UI
+      const tomorrow = moment(currentDay).add(1, 'days').format('L'); // format: dd/mm/yyyy
+      dispatch(setDateTimeBooking(tomorrow));
+      callAPI(pitchType, tomorrow);
+    }
+  };
+  // PREV DAY
+  const prevDate = () => {
+    setSelectedId(selectedId === 0 ? 0 : selectedId - 1);
+    if (selectedId <= 0) {
+      console.log(Alert.alert('Không thể Prev được !'));
+    } else {
+      setCurrentDay(moment(currentDay).subtract(1, 'days')); //prev Day -1
+      const prevDay = moment(currentDay).subtract(1, 'days').format('L');
+      dispatch(setDateTimeBooking(prevDay));
+      callAPI(pitchType, prevDay);
+    }
+  };
   const callAPI = async (typePitchs?: string, dateTimeParams?: string) => {
     const params = {
       pitchName: pitchName,
@@ -69,77 +92,71 @@ const BookFootballPitch: React.FC = () => {
         dispatch(setLoading(false));
       });
   };
-  const callAPI_ONECE = async () => {
-    const params = {
-      pitchName: pitchName,
-      pitchType: pitchType,
-      pitchId: pitchId,
-      dateTime: moment().format('L'),
-    };
-    setLoading(true);
-    FootballApi.book_football_Time(params)
-      .then(response => {
-        dispatch(setFootballTimeList(response.footballPitch));
-        dispatch(setId(response._id));
-        setLoading(false);
-      })
-      .catch(error => {
-        console.log(error);
-        setLoading(false);
-      });
-  };
-  // const [refreshing, setRefreshing] = React.useState(false);
-  // const onRefresh = useCallback(async () => {
-  //   const params = {
-  //     pitchName: pitchName,
-  //     pitchType: pitchType,
-  //     pitchId: pitchId,
-  //     dateTime: dateTimeBooking,
-  //   };
-  //   setLoading(true);
-  //   setRefreshing(true);
-  //   FootballApi.book_football_Time(params)
-  //     .then(response => {
-  //       dispatch(setFootballTimeList(response.footballPitch));
-  //       dispatch(setId(response._id));
-  //       setLoading(false);
-  //       setRefreshing(false);
-  //     })
-  //     .catch(error => {
-  //       console.log(error);
-  //       setLoading(false);
-  //       setRefreshing(false);
-  //     });
-  // }, []);
   return (
-    <SafeAreaView style={styles.container}>
-      <AppHeader title={pitchName} />
-      <View style={styles.containerWrap}>
-        <CalendarAndTypePitch />
-      </View>
-      <AppViewWithErrorAndLoading
-        loading={loading}
-        loadingSize="small"
-        style={{zIndex: -1, flex: 1, justifyContent: 'center'}}
-        errorString={''}>
-        <FlatList
-          data={dataPitch}
-          contentContainerStyle={styles.Pitch_container}
-          numColumns={3}
-          renderItem={({item}: ListRenderItemInfo<FootballTime>) => (
-            <FootballTimeItem
-              item={item}
-              dateTime={dateTime}
-              dateTimeBooking={dateTimeBooking}
+    <View style={styles.calendarView}>
+      <>
+        <View style={styles.dropdownView}>
+          <TouchableOpacity
+            onPress={() => {
+              setVisible(!visible);
+            }}>
+            <View style={styles.dropdown}>
+              <Text>{pitchType} </Text>
+              <Text>
+                <AntDesign name="caretdown" size={14} />
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+        {visible && (
+          <View style={styles.openViewDropdown}>
+            <TouchableOpacity
+              onPress={() => {
+                setVisible(!visible);
+                dispatch(setPitchType('Sân 5'));
+                // setValueTypePitch('5');
+                callAPI('Sân 5', dateTimeBooking);
+              }}
+              style={styles.Type5}>
+              <Text>{'Sân 5'}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setVisible(!visible);
+                dispatch(setPitchType('Sân 7'));
+                callAPI('Sân 7', dateTimeBooking);
+              }}
+              style={styles.Type7}>
+              <Text>{'Sân 7'}</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </>
+      <View style={styles.calendar}>
+        <View style={styles.calendar_block}>
+          <TouchableOpacity onPress={prevDate}>
+            <Icon
+              name="chevron-left"
+              size={22}
+              style={[styles.btn_navigation, {color: COLOR__PREV}]}
             />
-          )}
-          // refreshControl={
-          //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          // }
-        />
-      </AppViewWithErrorAndLoading>
-      {/* <FooterFootball /> */}
-    </SafeAreaView>
+          </TouchableOpacity>
+          <View style={styles.numberdayCalendar}>
+            <Text style={styles.txtNumberDayCalendar}>
+              {currentDay.format('DD')}
+            </Text>
+            <Icon name="calendar" size={16} style={styles.icon_calendar} />
+          </View>
+          <TouchableOpacity onPress={nextDay}>
+            <Icon
+              name="chevron-right"
+              size={22}
+              style={[styles.btn_navigation, {color: COLOR__NEXT}]}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
   );
 };
 const {height} = Dimensions.get('screen');
@@ -312,4 +329,4 @@ export const styles = StyleSheet.create({
     padding: 3,
   },
 });
-export default BookFootballPitch;
+export default CalendarAndTypePitch;

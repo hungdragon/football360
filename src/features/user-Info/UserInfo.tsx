@@ -1,5 +1,7 @@
 import IconFontAntDesign from 'react-native-vector-icons/AntDesign';
 import IconFontEntypo from 'react-native-vector-icons/Entypo';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useAppUser} from 'context/AppUserContext';
 import React, {useEffect} from 'react';
 import {
@@ -207,7 +209,7 @@ const UserInfo: React.FC = () => {
                 // navigation.navigate('ChangePassword');
               }}>
               <View style={styles.Item_title}>
-                <IconFontAntDesign name="security" style={styles.icon_text} />
+                <Ionicons name="keypad-outline" style={styles.icon_text} />
                 <Text style={styles.txt_name}>Đổi mật khẩu</Text>
               </View>
             </TouchableOpacity>
@@ -220,10 +222,7 @@ const UserInfo: React.FC = () => {
                 Alert.alert('Liên hệ hỗ trợ 19005555');
               }}>
               <View style={styles.Item_title}>
-                <IconFontAntDesign
-                  name="support-agent"
-                  style={styles.icon_text}
-                />
+                <MaterialIcons name="support-agent" style={styles.icon_text} />
                 <Text style={styles.txt_name}>Hỗ trợ</Text>
               </View>
             </TouchableOpacity>

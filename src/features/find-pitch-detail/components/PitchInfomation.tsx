@@ -1,114 +1,81 @@
-import React, {useEffect, useState} from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Platform,
-} from 'react-native';
+import React, { useState } from 'react';
+import {Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import * as Animatable from 'react-native-animatable';
-import {useNavigation} from '@react-navigation/native';
-import {useAppDispatch, useAppSelector} from 'app/hooks';
-import {
-  setCodeName,
-  setIdPitch,
-  setLocation,
-  setPitchName,
-} from 'features/find-pitch/findPitchSlice';
-import {batch} from 'react-redux';
-import DisplayImageList from './components/DisplayImageList';
-import PitchInfomation from './components/PitchInfomation';
-import Evaluate from './components/Evaluate';
-import {useTheme} from 'react-native-paper';
-import { setDateTimeBooking } from 'features/book-football-pitch/FootballSlice';
-import moment from 'moment';
-
+import IconIonicons from 'react-native-vector-icons/Ionicons';
 interface Props {
-  route: {
-    params: {
-      id: string;
-    };
-  };
+  data: any;
 }
-const PitchDetail: React.FC<Props> = ({route}) => {
-  const {id} = route?.params;
-  const {colors} = useTheme();
-  const dispatch = useAppDispatch();
-  const pitchData = useAppSelector(state => state.findPitchState.pitchs);
-  const dataFilter = pitchData.filter(o => {
-    return o._id === id;
-  });
-  dispatch(setPitchName(dataFilter[0].pitchName));
-  dispatch(setCodeName(dataFilter[0].code));
-
-  const navigation = useNavigation();
-  const [bg, setBg] = useState('rgba(0,0,0,0)');
-  const handleScroll = (nativeEvent: any) => {
-    const slide = nativeEvent.contentOffset.y;
-    if (slide > 110) {
-      setBg('#fff');
+const PitchInfomation: React.FC<Props> = ({data}) => {
+  const [onpenMore, setOpenMore] = useState(true);
+  const [height, setHeight] = useState<any>(300);
+  const handleMore = () => {
+    if (onpenMore) {
+      console.log(onpenMore);
+      setOpenMore(false);
+      setHeight('auto');
     } else {
-      setBg('rgba(0,0,0,0)');
+      console.log(onpenMore);
+      setOpenMore(true);
+      setHeight(300);
     }
   };
   return (
-    <View style={styles.container}>
-      {/* <Animatable.View
-          animation="zoomIn"
-          style={{
-            backgroundColor: bg,
-            height: 90,
-            zIndex: 3,
-            width: '100%',
-            position: 'absolute',
-            top: 0,
-            justifyContent: 'center',
-            flexDirection: 'row',
-            alignItems: 'flex-end',
-          }}>
-          <Text>{}</Text>
-        </Animatable.View> */}
-      <View
-        style={[styles.goBackContainer, {backgroundColor: colors.sonicSilver}]}>
-        <TouchableOpacity
-          style={{padding: 5}}
-          onPress={() => navigation.goBack()}>
-          <Icon size={16} name="chevron-left" style={styles.iconGoBack} />
-        </TouchableOpacity>
+    <>
+      <View style={styles.Header}>
+        <Text style={styles.title}>{data[0]?.pitchName}</Text>
+        <View style={styles.review}>
+          <Text style={styles.star}>⭐⭐⭐⭐⭐</Text>
+          <Text style={styles.textReview}>({data[0]?.rate} đánh giá)</Text>
+        </View>
+        <View style={styles.location}>
+          <IconIonicons size={18} name="location" />
+          <Text style={styles.textAddress}>{data[0]?.location}</Text>
+        </View>
       </View>
-      <ScrollView
-        contentContainerStyle={styles.contentContainerStyle}
-        onScroll={({nativeEvent}) => {
-          handleScroll(nativeEvent);
-        }}>
-        <DisplayImageList data={dataFilter} />
-        <PitchInfomation data={dataFilter} />
-        <Evaluate />
-      </ScrollView>
-      {/* BUTTON ORDER */}
-      <View style={styles.btn_BookingPosotion}>
+
+      <View style={styles.content}>
+        <View style={styles.headerContent}>
+          <Text style={styles.h1}>{data[0]?.title}</Text>
+        </View>
+        <View style={[styles.bodyContent, {height: height}]}>
+          <Text style={styles.textBodyContent}>{data[0]?.content}</Text>
+        </View>
+        {/* //XEM THEM */}
         <TouchableOpacity
-          style={styles.btn}
           onPress={() => {
-            navigation.navigate('BookFootballPitch' as never);
-            dispatch(setIdPitch(dataFilter[0]._id));
-            dispatch(setLocation(dataFilter[0].location));
-            dispatch(setDateTimeBooking(moment().format('L')));
+            handleMore();
           }}>
-          <Text style={styles.textBooking}>Đặt sân ngay</Text>
+          <View style={styles.moreView}>
+            <Text style={styles.textMore}>XEM THÊM</Text>
+            {!onpenMore ? (
+              <Icon
+                size={16}
+                style={styles.iconChevrionStyle}
+                name="chevron-up"
+              />
+            ) : (
+              <Icon
+                size={16}
+                style={styles.iconChevrionStyle}
+                name="chevron-down"
+              />
+            )}
+          </View>
         </TouchableOpacity>
       </View>
-    </View>
+    </>
   );
 };
-export const styles = StyleSheet.create({
+export default PitchInfomation;
+const styles = StyleSheet.create({
   contentContainerStyle: {
     flexGrow: 1,
   },
   container: {
     flex: 1,
+    backgroundColor: '#F5F5F5',
+    //flexDirection: "column",
+    // position: "relative",
   },
   goBackContainer: {
     alignSelf: 'center',
@@ -121,6 +88,7 @@ export const styles = StyleSheet.create({
     height: 35,
     left: '6%',
     borderRadius: 50,
+    backgroundColor: '#787878',
   },
   Header: {
     backgroundColor: '#fff',
@@ -318,4 +286,3 @@ export const styles = StyleSheet.create({
     color: 'green',
   },
 });
-export default PitchDetail;

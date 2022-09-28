@@ -32,7 +32,7 @@ export const pitchAPI = {
           resolve(response) as unknown as FootballTimeResponse;
         })
         .catch((err: Error) => {
-          console.log('ERRRR----', err);
+          //console.log('ERRRR----', err);
           reject(err);
         });
     });

@@ -12,21 +12,18 @@ import {
 } from 'react-native';
 import {useDispatch} from 'react-redux';
 import {FootballTime} from '../FootballApi';
-import {setTimeBooking, setTimeSlot} from '../FootballSlice';
+import {setDateTimeBooking, setTimeSlot} from '../FootballSlice';
 import Icon from 'react-native-vector-icons/AntDesign';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 interface Props {
   item: FootballTime;
-  codeNewDay: string;
-  codeToday: string;
-  dateBooked: string;
+  dateTime: string;
+  dateTimeBooking: string;
 }
-const FootballItem: React.FC<Props> = ({
-  item,
-  codeNewDay,
-  codeToday,
-  dateBooked,
-}) => {
+const FootballItem: React.FC<Props> = ({item, dateTime, dateTimeBooking}) => {
+  console.log('====================================');
+  console.log('aaaa', dateTime + '' + dateTimeBooking);
+  console.log('====================================');
   let getHour = new Date().getHours();
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -34,13 +31,13 @@ const FootballItem: React.FC<Props> = ({
     <View style={Styles.Pitch_wrap}>
       <View style={Styles.Pitch_element}>
         <Text style={Styles.Time_Football}>{item.timeSlot}</Text>
-        {item.timeEnd <= getHour && codeToday === codeNewDay ? (
+        {item.timeEnd <= getHour && dateTime === dateTimeBooking ? (
           <Animatable.View animation="flash" duration={1000}>
             <Icon name="close" style={[Styles.Icon_Close]} />
           </Animatable.View>
         ) : getHour < item.timeStart &&
           item.status === 'payed' &&
-          codeToday === codeNewDay ? (
+          dateTime === dateTimeBooking ? (
           <TouchableOpacity
             onPress={() => {
               Alert.alert('da dat san');
@@ -50,14 +47,14 @@ const FootballItem: React.FC<Props> = ({
         ) : item.timeStart <= getHour &&
           getHour <= item.timeEnd &&
           item.status === 'payed' &&
-          codeToday === codeNewDay ? (
+          dateTime === dateTimeBooking ? (
           <TouchableOpacity
             onPress={() => {
               Alert.alert('đang chơi...');
             }}>
             <IoniconsIcon name="football" style={[Styles.Icon_Playing]} />
           </TouchableOpacity>
-        ) : item.status === 'pending' && codeToday !== codeNewDay ? (
+        ) : item.status === 'pending' && dateTime !== dateTimeBooking ? (
           <TouchableOpacity
             onPress={() => {
               dispatch(setTimeSlot(item.timeSlot));
@@ -72,7 +69,7 @@ const FootballItem: React.FC<Props> = ({
             }}>
             <Icon name="plus" style={[Styles.Icon_Plus]} />
           </TouchableOpacity>
-        ) : item.status === 'payed' && codeToday !== codeNewDay ? (
+        ) : item.status === 'payed' && dateTime !== dateTimeBooking ? (
           <TouchableOpacity
             onPress={() => {
               Alert.alert('đã có người đặt sân này!');
@@ -82,7 +79,7 @@ const FootballItem: React.FC<Props> = ({
         ) : (
           <TouchableOpacity
             onPress={() => {
-              dispatch(setTimeBooking(dateBooked));
+              dispatch(setDateTimeBooking(dateTimeBooking));
               dispatch(setTimeSlot(item.timeSlot));
               navigation.navigate(
                 'FootballDetail' as never,

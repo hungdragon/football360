@@ -33,7 +33,7 @@ export const findPitchApi = {
           resolve(response) as unknown as PitchInforResponse;
         })
         .catch((err: Error) => {
-          console.log('ERRRR----', err);
+          //console.log('ERRRR----', err);
           reject(err);
         });
     });

@@ -13,7 +13,7 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import {useStripe} from '@stripe/stripe-react-native';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
-import { useAppSelector } from 'app/hooks';
+import {useAppSelector} from 'app/hooks';
 interface Props {
   route: any;
 }
@@ -73,12 +73,14 @@ const PaymentMethod: React.FC<Props> = ({route}) => {
   const updateFootballBooking = async () => {
     await axios
       .post('http://localhost:3000/api/football-booking', {
-        code: code,
         id: id,
         idSlot: ID_goback,
       })
       .then(() => {
-        navigation.navigate('ModalPayment', {ID_goback: ID_goback});
+        navigation.navigate(
+          'ModalPayment' as never,
+          {ID_goback: ID_goback} as never,
+        );
       })
       .catch(error => {
         console.log('error--6--', error);

@@ -32,16 +32,16 @@ interface Props {
   route: any;
 }
 const ModalPayment: React.FC<Props> = ({navigation, route}) => {
+  const dispatch = useDispatch();
   const {ID_goback, Total} = route.params;
   console.log('aaa---', ID_goback);
   const idBack = ID_goback;
-  const dispatch = useDispatch();
 
-  const productServiceDATA = useAppSelector(
-    state => state.FootballState.productServiceData,
-  );
+  // const productServiceDATA = useAppSelector(
+  //   state => state.FootballState.productServiceData,
+  // );
   const [userName, setUserName] = useState<any>('');
-  const id = useAppSelector(state => state.FootballState.id);
+  //const id = useAppSelector(state => state.FootballState.id);
   useEffect(() => {
     getUserInfomation();
   }, []);
@@ -62,7 +62,9 @@ const ModalPayment: React.FC<Props> = ({navigation, route}) => {
 
   const pitchName = useAppSelector(state => state.findPitchState.pitchName);
   console.log('pitchName----', pitchName);
-  const timeBooking = useAppSelector(state => state.FootballState.timeBooking);
+  const timeBooking = useAppSelector(
+    state => state.FootballState.dateTimeBooking,
+  );
   const date = moment().format('L');
   const location = useAppSelector(state => state.findPitchState.location);
   const total = useAppSelector(state => state.FootballState.totalCustomer);
@@ -86,27 +88,6 @@ const ModalPayment: React.FC<Props> = ({navigation, route}) => {
     total,
     comment,
   );
-  //  const callApiBooking = async()=>{
-  //   try {
-
-  //     const response = await axios.post(
-  //       `${BASE_URL}api/GETcustomer-detail`,
-  //       {
-  //       username,
-  //        }
-  //     );
-  //     // console.log("data4---", response.data.footballPitch);
-
-  //     console.log('123--',JSON.stringify(response.data));
-  //    dispatch(setCustomerDetailData(response.data));
-  //    const countBooking =response.data.length;
-  //    dispatch( setNumberBooking(countBooking))
-  //    console.log('so tran dat1:',countBooking);
-  //  //  setListData(response.data)
-  //   } catch (error) {
-  //     console.log('err',error);
-  //   }
-  // }
   const time = timeSlot.slice(0, 5);
   const timeBookingDateTime = `${timeBooking} ${time}`;
   const params = {
@@ -133,68 +114,11 @@ const ModalPayment: React.FC<Props> = ({navigation, route}) => {
         dispatch(setCocaData([]));
         dispatch(setBayUpData([]));
         dispatch(setMarData([]));
-        dispatch(setIsSignFootball(false));
+        dispatch(setIsSignFootball(true));
       })
       .catch((err: any) => {
         console.log('Err API product Service', err);
       });
-    // await axios
-    //   .post(`${'http://localhost:3000/'}api/customer-detail`, {
-    //     pitchName,
-    //     timeSlot,
-    //     timeBooking,
-    //     date,
-    //     customerName,
-    //     numberPhone,
-    //     comment,
-    //     pricePitch,
-    //     dataService,
-    //     location,
-    //     total,
-    //     userName,
-    //   })
-    //   .then(() => {
-    //     dispatch(setProductServiceData([]));
-    //     // dispatch(setProductServiceData([]));
-    //     console.log('da xoa san pham');
-    //     dispatch(setReviveData([]));
-    //     dispatch(setCocaData([]));
-    //     dispatch(setBayUpData([]));
-    //     dispatch(setMarData([]));
-    //   })
-    //   .catch(err => {
-    //     console.log('Err API product Service', err);
-    //   });
-
-    // await axios
-    //   .post(
-    //     `${'http://localhost:3000'}api/GETcustomer-detail`,
-
-    //     {username: 'hung4000'},
-    //   )
-    //   .then(response => {
-    //     // console.log('gg', JSON.stringify(response.data.dataFilter));
-    //     // dispatch(setCustomerDetailData(response.data.dataFilter));
-    //     // dispatch(setNumberBooking(response.data.size));
-    //     // dispatch(setProductServiceData(productServiceDATA.length=0))
-    //     // dispatch(setProductServiceData([]));
-    //     // dispatch(setReviveData([]))
-    //     // dispatch(setCocaData([]))
-    //     // dispatch(setBayUpData([]))
-    //     // dispatch(setMarData([]))
-
-    //     // const dataFake = [{timeBooking: '22/6/2022'}, {timeBooking: '23/6/2022'}, {timeBooking: '19/6/2022'}]
-    //     // const dataFilter = _.filter(dataFake, (o) => {
-    //     //   const timeBooking = _.get(o, 'timeBooking', '');
-    //     //   const isAfterNow = moment(timeBooking, "DD/MM/YYYY").isAfter(
-    //     //     moment()
-    //     //   );
-    //     //   console.log("---isAfterNow----", isAfterNow);
-    //     // });
-    //   })
-    //   .catch(Err => {
-    //     console.log('Err Api 2: ', Err);
-    //   });
   };
   return (
     <View style={styles.container}>

@@ -14,6 +14,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7699B88040F8A987B510C191 /* libPods-Football-FootballTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-Football-FootballTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		9A9708D928DB0EEF00758DC6 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3E44042AF35A4CEEAA42C016 /* Roboto-Regular.ttf */; };
 		9AB2751E289CB8ED009523AF /* RobotoCondensed-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 49810ACAC192406FAEA33A20 /* RobotoCondensed-BoldItalic.ttf */; };
 		9AB2751F289CBF8D009523AF /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DD715566678A4F4886370380 /* Roboto-Thin.ttf */; };
 /* End PBXBuildFile section */
@@ -276,8 +277,8 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				25A791F42C3135DF11704E86 /* [CP] Embed Pods Frameworks */,
-				17785C55ECDB888E7F700ED9 /* [CP] Copy Pods Resources */,
+				532305FDA0E010CD60D6A876 /* [CP] Embed Pods Frameworks */,
+				6795BD3A3A5D800D1AC6B8EC /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -336,6 +337,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9A9708D928DB0EEF00758DC6 /* Roboto-Regular.ttf in Resources */,
 				9AB2751F289CBF8D009523AF /* Roboto-Thin.ttf in Resources */,
 				9AB2751E289CB8ED009523AF /* RobotoCondensed-BoldItalic.ttf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
@@ -362,24 +364,7 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
-		17785C55ECDB888E7F700ED9 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Football/Pods-Football-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Football/Pods-Football-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Football/Pods-Football-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		25A791F42C3135DF11704E86 /* [CP] Embed Pods Frameworks */ = {
+		532305FDA0E010CD60D6A876 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -394,6 +379,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Football/Pods-Football-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6795BD3A3A5D800D1AC6B8EC /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Football/Pods-Football-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Football/Pods-Football-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Football/Pods-Football-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */ = {

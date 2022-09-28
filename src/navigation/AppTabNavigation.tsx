@@ -8,6 +8,7 @@ import {BackHandler, StyleSheet, View} from 'react-native';
 import {useTheme} from 'react-native-paper';
 import {translate} from 'utils';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {AppError} from 'utils/Utils';
 import UserInfo from 'features/user-Info/UserInfo';
 import FindPitch from 'features/find-pitch';
@@ -107,17 +108,15 @@ const AppTabNavigation: React.FC = () => {
             tabBarIcon: () => (
               <View
                 style={{
-                  backgroundColor: 'red',
+                  backgroundColor: 'blue',
                   position: 'absolute',
                   bottom: 10,
-                  padding: 10,
+                  
+                  paddingHorizontal:15,
+                  paddingVertical:11,
                   borderRadius: 40,
                 }}>
-                <AntDesignIcon
-                  name="heart"
-                  size={30}
-                  style={{color: 'green'}}
-                />
+                <FontAwesome name="user" size={30} style={{color: '#fff'}} />
               </View>
             ),
           }}

@@ -2,50 +2,82 @@ import AppHeader from 'components/AppHeader/AppHeader';
 import AppText from 'components/text/AppText';
 import AppView from 'components/view/AppView';
 import {Formik} from 'formik';
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import * as yup from 'yup';
-import {Button, SafeAreaView, Text} from 'react-native';
+import {
+  Alert,
+  Button,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native';
 import {TextInput} from 'react-native-paper';
 import UploadFile from './UploadFile';
 import {Image, StyleSheet, TouchableOpacity} from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import {pitchAPI} from './api';
 import {image} from 'assets/icons';
 import {v4 as uuidv4} from 'uuid';
 import 'react-native-get-random-values';
+import AppViewWithErrorAndLoading from 'components/view/AppViewWithErrorAndLoading';
+import FootballLoading from './FootballLoading';
+import {useNavigation} from '@react-navigation/native';
+import DesignIcon from 'react-native-vector-icons/AntDesign';
+import MultipleImage from './MultipleImage';
+import {useAppSelector} from 'app/hooks';
 const footballPitchSchema = yup.object({
-  // pitchName: yup.string().required('Tên sân bóng không được để trống').max(80),
-  // location: yup
-  //   .string()
-  //   .required('Địa chỉ sân bóng không được để trống')
-  //   .max(80),
-  // longitude: yup.string().required('longitude is Required').max(12),
-  // latitude: yup.string().required('latitude is Required').max(100),
-  // // image: yup.string().required(' Ảnh sân không được để trống'),
-  // content: yup.string().required('Chi tiết sân không được để trống').max(100),
-  // openTime: yup.string().required('Giờ mở cửa không được để trống').max(3),
-  // closeTime: yup.string().required('Giờ đóng của không được để trống').max(3),
-  // minPrice: yup.string().required('Giá tối tiểu không được trống').max(9),
-  // maxPrice: yup.string().required('Giá tối đa không được trống').max(9),
+  pitchName: yup.string().required('Tên sân bóng không được để trống').max(80),
+  location: yup
+    .string()
+    .required('Địa chỉ sân bóng không được để trống')
+    .max(80),
+  longitude: yup.string().required('longitude is Required').max(20),
+  latitude: yup.string().required('latitude is Required').max(20),
+  image: yup
+    .mixed()
+    .nullable()
+    .required('Required Filed')
+    .test('size', 'File is too large', value => {
+      return value && value.fileSize <= 1 * 1024 * 1024;
+    }),
+  content: yup.string().required('Chi tiết sân không được để trống').max(100),
+  openTime: yup.string().required('Giờ mở cửa không được để trống').max(3),
+  closeTime: yup.string().required('Giờ đóng của không được để trống').max(3),
+  minPrice: yup.string().required('Giá tối tiểu không được trống').max(9),
+  maxPrice: yup.string().required('Giá tối đa không được trống').max(9),
+  // imgArray: yup
+  //   .mixed()
+  //   .nullable()
+  //   .required('Required Image')
+  //   .test('size', 'File is too large', value => {
+  //     return value && value.size <= 3 * 1024 * 1024;
+  //   }),
 });
+
 const FootballPitchCreate: React.FC = () => {
-  // const bodyRequestValue = {
-  //   pitchName: '',
-  //   openTime: '',
-  //   closeTime: '',
-  //   location: '',
-  //   priceRange: '',
-  //   image: '',
-  //   title: '',
-  //   content: '',
-  //   longitude: '',
-  //   latitude: '',
-  //   minPrice: '',
-  //   maxPrice: '',
-  //   imgArray: '',
-  // };
-  const [imageName, setImageName] = React.useState<string>();
-  // const [file, setFile] = useState(null);
+  const navigation = useNavigation();
+  const arrImage = useAppSelector(state => state.managerState.imgArray);
+  const bodyRequestValue = {
+    pitchName: '',
+    code: uuidv4(),
+    openTime: '',
+    closeTime: '',
+    location: '',
+    priceRange: '',
+    image: null,
+    title: '',
+    content: '',
+    longitude: '',
+    latitude: '',
+    minPrice: '',
+    maxPrice: '',
+    //imgArray: arrImage,
+  };
+  const formdata = new FormData();
+  const [imageName, setImageName] = React.useState<string>('');
+  const [loading, setLoading] = useState(false);
   console.log('render qua troi');
   const options = {
     title: 'Select Image',
@@ -59,66 +91,56 @@ const FootballPitchCreate: React.FC = () => {
     },
   };
 
-
-  const openGallery = async (setFieldValue: any) => {
-    // const images = await launchImageLibrary(options);
-    //  console.log('aaaaaa-----', images.assets[0]);
-    //  setImageName(images.assets[0]?.fileName);
-    //setFile(images.assets[0]);
-    // setFieldValue('image', images.assets[0]);
-  };
   const handleSave = async (values: any) => {
-    const formdata = new FormData();
-    formdata.append('image', {
+    setLoading(true);
+    formdata.append('imgArray', {
       uri: values.image.uri,
-      type: 'image/jpeg/jpg/png',
+      type: values.image.type,
       name: values.image.fileName,
-      data: values.image.data,
+      //data: values.image.data,
     });
-    // console.log('nnn', file.fileName);
-
+    arrImage.forEach((item, i) => {
+      formdata.append('imgArray', {
+        uri: item.path,
+        type: 'image/png',
+        name: item.filename || `filename${i}.jpg`,
+      });
+    });
     console.log('xinh qua-----', JSON.stringify(formdata));
-    console.log('xinh qua1111-----', values);
     pitchAPI
       .create_pitch(values, formdata)
       .then(() => {
-        console.log('thanh cong-----');
+        // eslint-disable-next-line no-sparse-arrays
+        Alert.alert('Notification', 'Success', [
+          {text: 'OK', onPress: () => navigation.goBack()},
+          ,
+        ]);
+        setLoading(false);
       })
       .catch(() => {
         console.log('errrrr');
+        setLoading(false);
       });
   };
-  console.log('cc', uuidv4());
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      pointerEvents={loading ? 'none' : 'auto'}
+      style={[styles.container]}>
+      {loading ? <FootballLoading /> : null}
       <AppHeader title="create" />
       <Formik
         //enableReinitialize
-        initialValues={{
-          pitchName: '',
-          code: uuidv4(),
-          openTime: '',
-          closeTime: '',
-          location: '',
-          priceRange: '',
-          image: null,
-          title: '',
-          content: '',
-          longitude: '',
-          latitude: '',
-          minPrice: '',
-          maxPrice: '',
-          imgArray: '',
-        }}
+        initialValues={bodyRequestValue}
         validationSchema={footballPitchSchema}
         onSubmit={(values, actions) => {
-          console.log('dddddddddd------');
-          handleSave(values);
-          setTimeout(() => {
-            actions.setSubmitting(false);
-
-            actions.resetForm();
-          }, 1000);
+          handleSave(values)
+            .then(() => {
+              // actions.setSubmitting(false);
+              actions.resetForm();
+            })
+            .catch(err => {
+              Alert.alert('error when call api create pitch', err);
+            });
         }}>
         {({
           handleChange,
@@ -129,8 +151,8 @@ const FootballPitchCreate: React.FC = () => {
           touched,
           setFieldValue,
         }) => (
-          <>
-            <AppView style={styles.form}>
+          <ScrollView style={{opacity: loading ? 0.5 : 1, flex: 1}}>
+            <AppView style={[styles.form]}>
               <AppView style={styles.formInput}>
                 <TextInput
                   outlineColor={'gray'}
@@ -155,6 +177,7 @@ const FootballPitchCreate: React.FC = () => {
                   style={{height: 40, width: 60}}
                   keyboardType="numeric"
                   maxLength={2}
+                  value={values.openTime}
                   onChangeText={handleChange('openTime')}
                 />
                 <Text>{`${'   đến   '}`}</Text>
@@ -163,17 +186,18 @@ const FootballPitchCreate: React.FC = () => {
                   style={{height: 40, width: 60}}
                   keyboardType="numeric"
                   maxLength={2}
+                  value={values.closeTime}
                   onChangeText={handleChange('closeTime')}
                 />
                 <AppView style={{flexDirection: 'column'}}>
-                  {errors.minPrice && touched.minPrice && (
+                  {errors.openTime && touched.openTime && (
                     <AppText style={styles.errorText}>
-                      {errors.minPrice}
+                      {errors.openTime}
                     </AppText>
                   )}
-                  {errors.maxPrice && touched.maxPrice && (
+                  {errors.closeTime && touched.closeTime && (
                     <AppText style={styles.errorText}>
-                      {errors.maxPrice}
+                      {errors.closeTime}
                     </AppText>
                   )}
                 </AppView>
@@ -195,6 +219,7 @@ const FootballPitchCreate: React.FC = () => {
               {errors.content && touched.content && (
                 <AppText style={styles.errorText}>{errors.content}</AppText>
               )}
+              <MultipleImage />
               <Text style={styles.txtDistancePrice}>
                 {'Khoảng giá giao động( VNĐ )'}
               </Text>
@@ -227,6 +252,7 @@ const FootballPitchCreate: React.FC = () => {
                 <TextInput
                   outlineColor={'gray'}
                   style={styles.textInputStyle}
+                  //numberOfLines={1}
                   placeholder={'SDS'}
                   mode="outlined"
                   maxLength={100}
@@ -275,13 +301,8 @@ const FootballPitchCreate: React.FC = () => {
               <TouchableOpacity
                 onPress={async () => {
                   const images = await launchImageLibrary(options);
-                  console.log('aaaaaa-----', images.assets[0]);
                   setImageName(images.assets[0]?.fileName);
-                  //setFile(images.assets[0]);
                   setFieldValue('image', images.assets[0]);
-                  // openGallery(setFieldValue)
-                  //   .then(() => {})
-                  //   .catch(() => {});
                 }}>
                 <AppView style={styles.btn}>
                   <Image source={image.IC_UPLOADFILE} />
@@ -293,10 +314,11 @@ const FootballPitchCreate: React.FC = () => {
                   <AppText style={styles.image}>{imageName}</AppText>
                 )}
                 <AppText style={styles.titleUpload}>
-                  <AppText style={styles.keyUpload}>{`${'* '}`}</AppText>File
-                  tải lên không quá 1Mb
+                  <AppText style={styles.keyUpload}>{`${'* '}`}</AppText>
+                  File tải lên không quá 1Mb
                 </AppText>
               </TouchableOpacity>
+              <AppText style={styles.errorText}>{errors.image}</AppText>
             </AppView>
             <AppView style={styles.btnView}>
               <AppView style={styles.btnCancel}>
@@ -308,7 +330,7 @@ const FootballPitchCreate: React.FC = () => {
                 <AppText style={{color: '#fff'}}>{'Lưu'}</AppText>
               </TouchableOpacity>
             </AppView>
-          </>
+          </ScrollView>
         )}
       </Formik>
     </SafeAreaView>
@@ -325,6 +347,7 @@ const styles = StyleSheet.create({
   },
   textInputStyle: {
     width: '100%',
+    overflow: 'hidden',
   },
   formInput: {
     flexDirection: 'row',

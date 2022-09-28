@@ -28,21 +28,27 @@ const Notification: React.FC = () => {
         onDismiss={toggleMenu}
         anchor={
           <View>
-            <Text
+            <View
               style={{
                 backgroundColor: 'red',
-                fontSize: 11,
+                borderRadius: 10,
                 position: 'absolute',
                 zIndex: 11,
                 right: -7,
                 top: -7,
-                borderRadius: 50,
-                padding: 1,
+                //borderRadius: 50,
+                padding: 2,
                 paddingHorizontal: 6,
-                textAlign: 'center',
               }}>
-              1
-            </Text>
+              <Text
+                style={{
+                  fontSize: 11,
+                  textAlign: 'center',
+                  //color:'#fff'
+                }}>
+                1
+              </Text>
+            </View>
             <TouchableOpacity onPress={toggleMenu}>
               <FontAwesome name="bell-o" size={22} />
             </TouchableOpacity>

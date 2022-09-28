@@ -5,6 +5,7 @@ import findPitchSlice from 'features/find-pitch/findPitchSlice';
 
 import loginSlice from 'features/login/loginSlice';
 import userSlice from 'features/user-Info/userSlice';
+import managerSlice from 'manage/footballPitch-create/footballSlice';
 
 const rootreducer = {
   loginState: loginSlice,
@@ -13,5 +14,6 @@ const rootreducer = {
   FootballState: FootballSlice,
   userState: userSlice,
   findAwayTeamState: findAwayTeamSlice,
+  managerState: managerSlice,
 };
 export default rootreducer;

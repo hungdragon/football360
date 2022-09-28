@@ -58,7 +58,7 @@ export const loginAPI = {
           resolve(response);
         })
         .catch((err: Error) => {
-          console.log('ERRRR----', err);
+          //console.log('ERRRR----', err);
           reject(err);
         });
     });

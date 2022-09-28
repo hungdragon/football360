@@ -1,114 +1,65 @@
-import React, {useEffect, useState} from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Platform,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import * as Animatable from 'react-native-animatable';
-import {useNavigation} from '@react-navigation/native';
-import {useAppDispatch, useAppSelector} from 'app/hooks';
-import {
-  setCodeName,
-  setIdPitch,
-  setLocation,
-  setPitchName,
-} from 'features/find-pitch/findPitchSlice';
-import {batch} from 'react-redux';
-import DisplayImageList from './components/DisplayImageList';
-import PitchInfomation from './components/PitchInfomation';
-import Evaluate from './components/Evaluate';
-import {useTheme} from 'react-native-paper';
-import { setDateTimeBooking } from 'features/book-football-pitch/FootballSlice';
-import moment from 'moment';
-
-interface Props {
-  route: {
-    params: {
-      id: string;
-    };
-  };
-}
-const PitchDetail: React.FC<Props> = ({route}) => {
-  const {id} = route?.params;
-  const {colors} = useTheme();
-  const dispatch = useAppDispatch();
-  const pitchData = useAppSelector(state => state.findPitchState.pitchs);
-  const dataFilter = pitchData.filter(o => {
-    return o._id === id;
-  });
-  dispatch(setPitchName(dataFilter[0].pitchName));
-  dispatch(setCodeName(dataFilter[0].code));
-
-  const navigation = useNavigation();
-  const [bg, setBg] = useState('rgba(0,0,0,0)');
-  const handleScroll = (nativeEvent: any) => {
-    const slide = nativeEvent.contentOffset.y;
-    if (slide > 110) {
-      setBg('#fff');
-    } else {
-      setBg('rgba(0,0,0,0)');
-    }
+import React, { useState } from 'react';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import IconAntDesign from 'react-native-vector-icons/AntDesign';
+const Evaluate: React.FC= () => {
+  const evaluateData = [];
+  const [evaluate, setEvaluate] = useState(-1);
+  const handleEvaluate = (e: any) => {
+    setEvaluate(e);
+    console.log(evaluate);
   };
   return (
-    <View style={styles.container}>
-      {/* <Animatable.View
-          animation="zoomIn"
-          style={{
-            backgroundColor: bg,
-            height: 90,
-            zIndex: 3,
-            width: '100%',
-            position: 'absolute',
-            top: 0,
-            justifyContent: 'center',
-            flexDirection: 'row',
-            alignItems: 'flex-end',
-          }}>
-          <Text>{}</Text>
-        </Animatable.View> */}
-      <View
-        style={[styles.goBackContainer, {backgroundColor: colors.sonicSilver}]}>
-        <TouchableOpacity
-          style={{padding: 5}}
-          onPress={() => navigation.goBack()}>
-          <Icon size={16} name="chevron-left" style={styles.iconGoBack} />
-        </TouchableOpacity>
-      </View>
-      <ScrollView
-        contentContainerStyle={styles.contentContainerStyle}
-        onScroll={({nativeEvent}) => {
-          handleScroll(nativeEvent);
-        }}>
-        <DisplayImageList data={dataFilter} />
-        <PitchInfomation data={dataFilter} />
-        <Evaluate />
-      </ScrollView>
-      {/* BUTTON ORDER */}
-      <View style={styles.btn_BookingPosotion}>
-        <TouchableOpacity
-          style={styles.btn}
-          onPress={() => {
-            navigation.navigate('BookFootballPitch' as never);
-            dispatch(setIdPitch(dataFilter[0]._id));
-            dispatch(setLocation(dataFilter[0].location));
-            dispatch(setDateTimeBooking(moment().format('L')));
-          }}>
-          <Text style={styles.textBooking}>Đặt sân ngay</Text>
-        </TouchableOpacity>
+    <View style={styles.footer}>
+      <Text style={styles.h1Footer}>Đánh giá sân</Text>
+      <View style={styles.listButonREVIEW}>
+        {evaluateData.map((e, index) => (
+          <TouchableOpacity
+            onPress={() => {
+              handleEvaluate(index);
+            }}
+            key={index}
+            //  style={styles.buttonStarPress}
+          >
+            {evaluate === index ? (
+              <View style={styles.buttonStarPress} key={index}>
+                <IconAntDesign
+                  name="check"
+                  style={{padding: 4, color: 'green'}}
+                  size={16}
+                />
+                <Text style={styles.numberStartACtive}>{e.star}</Text>
+                <IconAntDesign
+                  name="star"
+                  style={{padding: 4, color: '#FFCC00'}}
+                  size={16}
+                />
+              </View>
+            ) : (
+              <View style={styles.buttonStarP}>
+                <Text style={styles.numberStart}>{e.star}</Text>
+                <IconAntDesign
+                  name="staro"
+                  style={{padding: 4, color: 'gray'}}
+                  size={16}
+                />
+              </View>
+            )}
+          </TouchableOpacity>
+        ))}
       </View>
     </View>
   );
 };
+export default Evaluate;
 export const styles = StyleSheet.create({
   contentContainerStyle: {
     flexGrow: 1,
   },
   container: {
     flex: 1,
+    backgroundColor: '#F5F5F5',
+    //flexDirection: "column",
+    // position: "relative",
   },
   goBackContainer: {
     alignSelf: 'center',
@@ -121,6 +72,7 @@ export const styles = StyleSheet.create({
     height: 35,
     left: '6%',
     borderRadius: 50,
+    backgroundColor: '#787878',
   },
   Header: {
     backgroundColor: '#fff',
@@ -318,4 +270,3 @@ export const styles = StyleSheet.create({
     color: 'green',
   },
 });
-export default PitchDetail;

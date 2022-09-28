@@ -32,19 +32,24 @@ import EmptyView from 'components/EmptyView';
 import {findAwayTeamApi} from 'features/find-away-team/findAwayTeamApi';
 import PitchItem from './PitchItem';
 import Notification from 'notification';
+import {useTheme} from 'react-native-paper';
 const FindPitch: React.FC = () => {
+  const {colors} = useTheme();
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const pitchData = useAppSelector(state => state.findPitchState.pitchs);
+  const seachName = useAppSelector(state => state.findPitchState.searchName);
+
   const [dataFilter, setDataFilter] = useState<Array<PitchInfo>>(pitchData);
   const [refreshing, setRefreshing] = React.useState(false);
   const [currentLong, setCurrentLong] = useState<number>(0);
   const [currentLat, setCurrentLat] = useState<number>(0);
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState(false);
+
   const {getHrisCode} = useAppUser();
   const userName = getHrisCode();
-  const seachName = useAppSelector(state => state.findPitchState.searchName);
+
   useEffect(() => {
     callApi();
   }, []);
@@ -63,12 +68,12 @@ const FindPitch: React.FC = () => {
         const getFindPitchData = await findPitchApi.getPitchList();
         const teamListRequest = await findAwayTeamApi.getTeamList();
         const teamListData = teamListRequest.dataFilter;
-        const teamListRequestData = _.filter(teamListData, o => {
+        const teamListRequestData = _.filter(teamListData, (o: any) => {
           return o.userName === userName && o.isStatus === 'pending';
         });
         batch(() => {
-          dispatch(setPitchData(getFindPitchData?.pitchs));
           setDataFilter(getFindPitchData.pitchs);
+          dispatch(setPitchData(getFindPitchData?.pitchs));
           dispatch(
             setFootballOrderData(getValue(getFootballOrder, 'data', [])),
           );
@@ -77,7 +82,7 @@ const FindPitch: React.FC = () => {
           dispatch(setTeamListRequestData(teamListRequestData));
           setLoading(false);
         });
-      }, 5000);
+      }, 500);
     } catch (err) {
       setError(err);
       setLoading(false);
@@ -167,16 +172,17 @@ const FindPitch: React.FC = () => {
       const newData = _.filter(pitchData, (o: any) => {
         const itemData = o.pitchName
           ? o.pitchName.toUpperCase()
-          : "".toUpperCase();
+          : ''.toUpperCase();
         const nameData = seachName.toUpperCase();
         return itemData.indexOf(nameData) > -1;
       });
       setDataFilter(newData);
     } else {
-     // callAPI();
+      // callAPI();
       // dispatch(setDataFind(data));
     }
   }, [seachName]);
+  //EMPTY VIEW
   const EmptyComponent = () => <EmptyView />;
   return (
     <SafeAreaView style={styles.container}>
@@ -185,7 +191,11 @@ const FindPitch: React.FC = () => {
           <Notification />
         </View>
         <View style={styles.search_element}>
-          <Icon name="search1" size={20} style={styles.styleIconSearch} />
+          <Icon
+            name="search1"
+            size={20}
+            style={[styles.styleIconSearch, {color: colors.gray}]}
+          />
           <Text
             onPress={() => {
               navigation.navigate('SearchNamePitch' as never);
@@ -203,7 +213,9 @@ const FindPitch: React.FC = () => {
             <MaterialIcon
               name="crosshairs-gps"
               size={25}
-              style={[!gpsActive ? {color: 'blue'} : {color: 'black'}]}
+              style={[
+                !gpsActive ? {color: colors.blue} : {color: colors.black},
+              ]}
             />
           </TouchableOpacity>
         </View>
@@ -236,7 +248,6 @@ const height_pitch = height * 0.25;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: '#e5e5e5',
   },
   top_search: {
     height: '5%',
@@ -266,7 +277,6 @@ const styles = StyleSheet.create({
   },
   styleIconSearch: {
     marginLeft: 8,
-    color: 'gray',
   },
   styleTxtSearch: {
     width: '100%',
@@ -280,10 +290,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   styleKM: {
-    // height: 35,
-    backgroundColor: '#fff',
     padding: 5,
-    fontSize: Platform.OS === 'ios' ? 14 : 18,
     borderRadius: 5,
   },
   txtKM: {
@@ -291,10 +298,8 @@ const styles = StyleSheet.create({
   },
   // Phần 2
   body_block: {
-    // backgroundColor:'#e5e5e5',
     flexDirection: 'column',
     height: '100%',
-    //backgroundColor: "blue",
   },
   styleElementTimeBlock: {
     borderRadius: 20,
@@ -306,22 +311,17 @@ const styles = StyleSheet.create({
   },
   list_pitch: {
     marginHorizontal: 10,
-
-    //backgroundColor: "pink",
     borderRadius: 20,
     flexDirection: 'column',
   },
   time_block: {
     height: height_pitch / 3,
-    // backgroundColor:'red',
     padding: 10,
-    // backgroundColor:'red',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   text_time: {
-    // textAlign: 'center',
     color: 'white',
     fontWeight: 'bold',
     fontSize: Platform.OS === 'ios' ? 14 : 16,
@@ -330,33 +330,23 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     height: height_pitch,
     borderRadius: 20,
-    // backgroundColor: "gray",
     marginHorizontal: 10,
-    //flexDirection: "row",
     backgroundColor: 'rgba(0, 0, 0, .5)',
     zIndex: -1,
   },
   address_block: {
     height: height_pitch / 1.6,
     flexDirection: 'row',
-    // backgroundColor: "red",
     alignItems: 'flex-end',
     marginHorizontal: 10,
-    // width:height_pitch/2
-
-    //justifyContent: 'flex-end'
   },
   address_left: {
     width: '60%',
-    // backgroundColor:'blue'
   },
   address_right: {
     width: '40%',
     flexDirection: 'column',
     alignItems: 'center',
-    //paddingHorizontal: 2
-    // backgroundColor:'green',
-    //marginVertical:15
   },
   loadingAndErrorStyle: {
     flex: 1,

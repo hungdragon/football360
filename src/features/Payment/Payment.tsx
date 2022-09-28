@@ -31,24 +31,21 @@ const Payment: React.FC<{navigation: any; route: any}> = ({
   navigation,
   route,
 }) => {
-  //const [currentDate, setCurrentDate] = useState('');
-  const {content, phoneNumber, fullName} = route.params;
+  const dispatch = useDispatch();
+  const {codeService, codePrice, price} = route?.params;
+  const fullName = useAppSelector(state => state.FootballState.fullNameTxt);
+  const content = useAppSelector(state => state.FootballState.comment);
+  const phoneNumber = useAppSelector(
+    state => state.FootballState.phoneNumberTxt,
+  );
   const pitch_price = useAppSelector(state => state.FootballState.PitchPrice);
   const id_slotTime = useAppSelector(state => state.FootballState.idSlot);
-  const {codeService, codePrice, price} = route?.params;
-  //const [idNext, setIdNext] = useState(ID_next);
-  //  const [pricest, setPrice] = useState(pricess);
-  //const [times, setTime] = useState(timeSlot);
-  //const [nameCustomers, setNameCustomer] = useState(customerName);
-  // const [contents, setContent] = useState(content);
-  // const [sdts, setSdt] = useState(sdt);
-  //const [data, setData] = React.useState('');
   const pitchName = useAppSelector(state => state.findPitchState.pitchName);
-  const timeBooking = useAppSelector(state => state.FootballState.timeBooking);
+  const timeBooking = useAppSelector(
+    state => state.FootballState.dateTimeBooking,
+  );
   const timeSlot = useAppSelector(state => state.FootballState.timeSlot);
   const isToday = moment().format('L');
-  // console.warn(II);
-  const code = useAppSelector(state => state.FootballState.code);
   const productServiceDATA = useAppSelector(
     state => state.FootballState.productServiceData,
   );
@@ -56,9 +53,6 @@ const Payment: React.FC<{navigation: any; route: any}> = ({
   const bayUpData = useAppSelector(state => state.FootballState.bayUpData);
   const reviveData = useAppSelector(state => state.FootballState.reviveData);
   const marData = useAppSelector(state => state.FootballState.marData);
-  const id = useAppSelector(state => state.FootballState.id);
-  console.log('id----2-----:', id);
-  const dispatch = useDispatch();
   const back = useCallback(
     async (total: number) => {
       navigation.navigate('PaymentMethod', {
@@ -72,24 +66,19 @@ const Payment: React.FC<{navigation: any; route: any}> = ({
     },
     [content, id_slotTime, price, timeSlot],
   );
-  const kk = JSON.stringify(productServiceDATA);
-  const hh = JSON.stringify(cocaData);
-  const jj = JSON.stringify(bayUpData);
-  const pp = JSON.stringify(reviveData);
-  const ll = JSON.stringify(marData);
-  console.log('kk------', kk);
-  console.log('hh------', hh);
-  console.log('jj------', jj);
-  console.log('pp------', pp);
-  console.log('ll------', ll);
+  // const kk = JSON.stringify(productServiceDATA);
+  // const hh = JSON.stringify(cocaData);
+  // const jj = JSON.stringify(bayUpData);
+  // const pp = JSON.stringify(reviveData);
+  // const ll = JSON.stringify(marData);
+  // console.log('kk------', kk);
+  // console.log('hh------', hh);
+  // console.log('jj------', jj);
+  // console.log('pp------', pp);
+  // console.log('ll------', ll);
   const pricePP = Number(price); //tien nuoc uong
-  console.log('price----', price);
-  console.log('pricePP-----', pricePP);
-  //console.log(codeService);
   React.useEffect(() => {
     if (codeService) {
-      console.log('TOTAL-------', Total);
-      console.log('PRICE-------', Number(pricePP));
       if (codeService === 'coca') {
         setTotal(Total + pricePP);
       } else if (codeService === '7up') {
@@ -97,7 +86,6 @@ const Payment: React.FC<{navigation: any; route: any}> = ({
       } else if (codeService === 'revive') {
         setTotal(Total + pricePP);
       } else {
-        // setAddMar(addMar+1);
         setTotal(Total + pricePP);
       }
     }
@@ -137,8 +125,7 @@ const Payment: React.FC<{navigation: any; route: any}> = ({
   const [addRevive, setAddRevive] = useState<number>(1);
   const [add7up, setAdd7up] = useState<number>(1);
   const [addMar, setAddMar] = useState<number>(1);
-  const pricePitchParse = Number(pricePP);
-  console.log('pricePitchParse----', pricePitchParse);
+
   const [Total, setTotal] = useState<number>(Number(pitch_price));
   /////// service
   const Revive__DECREASE = (codeName: string, prices: number) => {
@@ -151,11 +138,10 @@ const Payment: React.FC<{navigation: any; route: any}> = ({
       dispatch(setProductServiceData(arr_new));
       dispatch(setReviveData([]));
     } else {
-      console.log('price77--', prices);
       setTotal(Total - prices);
       setAddRevive(addRevive - 1);
       const arr_new = _.filter(reviveData, o => {
-        return o.codeService === code;
+        return o.codeService === codeName;
       });
       let quantity = arr_new[0].quantity;
       quantity = quantity - 1;
@@ -164,18 +150,15 @@ const Payment: React.FC<{navigation: any; route: any}> = ({
     }
   };
   const Cocacola__DECREASE = (codeName: string, prices: number) => {
-    console.log('price88--', prices);
     if (addCoca === 1) {
       setTotal(Total - prices);
       navigation.setParams({codeService: null});
       const arr_new = _.filter(productServiceDATA, o => {
         return o.codeService !== codeName;
       });
-      //console.log('arr', JSON.stringify(arr_new));
       dispatch(setProductServiceData(arr_new));
       dispatch(setCocaData([]));
     } else {
-      //console.log('price88--', prices);
       const arr_new = _.filter(cocaData, o => {
         return o.codeService === codeName;
       });
@@ -184,12 +167,10 @@ const Payment: React.FC<{navigation: any; route: any}> = ({
       let quantity = arr_new[0].quantity;
       quantity = quantity - 1;
       const obj = {...arr_new[0], quantity: quantity};
-      //console.log('ppp--', arr_new, quantity);
       dispatch(setCocaData([obj]));
     }
   };
   const SevenUp__DECREASE = (codeName: string, prices: number) => {
-    //console.log('price88--', prices);
     if (add7up === 1) {
       setTotal(Total - prices);
       navigation.setParams({codeService: null});
@@ -199,7 +180,6 @@ const Payment: React.FC<{navigation: any; route: any}> = ({
       dispatch(setProductServiceData(arr_new));
       dispatch(setBayUpData([]));
     } else {
-      //console.log('price88--', prices);
       setTotal(Total - prices);
       setAdd7up(add7up - 1);
       const arr_new = _.filter(bayUpData, o => {
@@ -208,7 +188,6 @@ const Payment: React.FC<{navigation: any; route: any}> = ({
       let quantity = arr_new[0].quantity;
       quantity = quantity - 1;
       const obj = {...arr_new[0], quantity: quantity};
-      //console.log('ppp--', arr_new, quantity);
       dispatch(setBayUpData([obj]));
     }
   };
@@ -243,7 +222,6 @@ const Payment: React.FC<{navigation: any; route: any}> = ({
     let quantity = arr_new[0].quantity;
     quantity = quantity + 1;
     const obj = {...arr_new[0], quantity: quantity};
-    console.log('ppp--', arr_new, quantity);
     dispatch(setCocaData([obj]));
   };
   const Revive__INCREASE = (codeName: string, prices: number) => {
@@ -255,7 +233,6 @@ const Payment: React.FC<{navigation: any; route: any}> = ({
     let quantity = arr_new[0].quantity;
     quantity = quantity + 1;
     const obj = {...arr_new[0], quantity: quantity};
-    console.log('ppp--', arr_new, quantity);
     dispatch(setReviveData([obj]));
   };
   const SevenUp__INCREASE = (codeName: string, prices: number) => {
@@ -267,7 +244,6 @@ const Payment: React.FC<{navigation: any; route: any}> = ({
     let quantity = arr_new[0].quantity;
     quantity = quantity + 1;
     const obj = {...arr_new[0], quantity: quantity};
-    console.log('ppp--', arr_new, quantity);
     dispatch(setBayUpData([obj]));
   };
   const Marboro__INCREASE = (codeName: string, prices: number) => {
@@ -283,43 +259,41 @@ const Payment: React.FC<{navigation: any; route: any}> = ({
   };
   const renderAddSL = (CODE: string, prices: string) => {
     const PRICE = Number(prices);
-    console.log('88--', PRICE);
-    console.log(Total);
-    if (CODE === 'coca') {
-      return (
-        <ProductItem
-          quantity={addCoca}
-          decrease={() => Cocacola__DECREASE(CODE, PRICE)}
-          increase={() => Cocacola__INCREASE(CODE, PRICE)}
-        />
-      );
-    }
-    if (CODE === 'revive') {
-      return (
-        <ProductItem
-          quantity={addRevive}
-          decrease={() => Revive__DECREASE(CODE, PRICE)}
-          increase={() => Revive__INCREASE(CODE, PRICE)}
-        />
-      );
-    }
-    if (CODE === '7up') {
-      return (
-        <ProductItem
-          quantity={add7up}
-          decrease={() => SevenUp__DECREASE(CODE, PRICE)}
-          increase={() => SevenUp__INCREASE(CODE, PRICE)}
-        />
-      );
-    }
-    if (CODE === 'mar') {
-      return (
-        <ProductItem
-          quantity={addMar}
-          decrease={() => Marboro__DECREASE(CODE, PRICE)}
-          increase={() => Marboro__INCREASE(CODE, PRICE)}
-        />
-      );
+    switch (CODE) {
+      case 'coca':
+        return (
+          <ProductItem
+            quantity={addCoca}
+            decrease={() => Cocacola__DECREASE(CODE, PRICE)}
+            increase={() => Cocacola__INCREASE(CODE, PRICE)}
+          />
+        );
+      case 'revive':
+        return (
+          <ProductItem
+            quantity={addRevive}
+            decrease={() => Revive__DECREASE(CODE, PRICE)}
+            increase={() => Revive__INCREASE(CODE, PRICE)}
+          />
+        );
+      case '7up':
+        return (
+          <ProductItem
+            quantity={add7up}
+            decrease={() => SevenUp__DECREASE(CODE, PRICE)}
+            increase={() => SevenUp__INCREASE(CODE, PRICE)}
+          />
+        );
+      case 'mar':
+        return (
+          <ProductItem
+            quantity={addMar}
+            decrease={() => Marboro__DECREASE(CODE, PRICE)}
+            increase={() => Marboro__INCREASE(CODE, PRICE)}
+          />
+        );
+      default:
+        return;
     }
   };
   return (
@@ -343,7 +317,11 @@ const Payment: React.FC<{navigation: any; route: any}> = ({
               <RowInfoMiddle label="Số điện thoại" content={phoneNumber} />
               <RowInfoMiddle label="Ngày đặt" content={timeBooking} />
               <RowInfoMiddle label="Thông tin thêm" content={content} />
-              <RowInfoMiddle label="Tiền sân" content={pitch_price} color="red" />
+              <RowInfoMiddle
+                label="Tiền sân"
+                content={pitch_price}
+                color="red"
+              />
             </View>
             {/* RENDER PRODUCT SERVICES */}
             {productServiceDATA.length > 0

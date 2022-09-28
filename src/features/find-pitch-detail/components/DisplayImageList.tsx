@@ -1,114 +1,74 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
+  Dimensions,
+  Image,
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
-  Platform,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import * as Animatable from 'react-native-animatable';
-import {useNavigation} from '@react-navigation/native';
-import {useAppDispatch, useAppSelector} from 'app/hooks';
-import {
-  setCodeName,
-  setIdPitch,
-  setLocation,
-  setPitchName,
-} from 'features/find-pitch/findPitchSlice';
-import {batch} from 'react-redux';
-import DisplayImageList from './components/DisplayImageList';
-import PitchInfomation from './components/PitchInfomation';
-import Evaluate from './components/Evaluate';
-import {useTheme} from 'react-native-paper';
-import { setDateTimeBooking } from 'features/book-football-pitch/FootballSlice';
-import moment from 'moment';
-
+const HEIGHT = Dimensions.get('window').height;
+const WIDTH = Dimensions.get('window').width;
 interface Props {
-  route: {
-    params: {
-      id: string;
-    };
-  };
+  data: any;
 }
-const PitchDetail: React.FC<Props> = ({route}) => {
-  const {id} = route?.params;
-  const {colors} = useTheme();
-  const dispatch = useAppDispatch();
-  const pitchData = useAppSelector(state => state.findPitchState.pitchs);
-  const dataFilter = pitchData.filter(o => {
-    return o._id === id;
-  });
-  dispatch(setPitchName(dataFilter[0].pitchName));
-  dispatch(setCodeName(dataFilter[0].code));
-
-  const navigation = useNavigation();
-  const [bg, setBg] = useState('rgba(0,0,0,0)');
-  const handleScroll = (nativeEvent: any) => {
-    const slide = nativeEvent.contentOffset.y;
-    if (slide > 110) {
-      setBg('#fff');
-    } else {
-      setBg('rgba(0,0,0,0)');
+const DisplayImageList: React.FC<Props> = ({data}) => {
+  const imgArray = data[0].imgArray;
+  const [imgActive, setImgActive] = useState(0);
+  const onChange = (nativeEvent: any) => {
+    //  const contentOffset = 0;
+    // console.log(nativeEvent.contentOffset.x);
+    const slide = Math.ceil(
+      nativeEvent.contentOffset.x / nativeEvent.layoutMeasurement.width,
+    );
+    if (slide !== imgActive) {
+      setImgActive(slide);
     }
   };
   return (
-    <View style={styles.container}>
-      {/* <Animatable.View
-          animation="zoomIn"
-          style={{
-            backgroundColor: bg,
-            height: 90,
-            zIndex: 3,
-            width: '100%',
-            position: 'absolute',
-            top: 0,
-            justifyContent: 'center',
-            flexDirection: 'row',
-            alignItems: 'flex-end',
-          }}>
-          <Text>{}</Text>
-        </Animatable.View> */}
+    <View style={styles.arrayImageView}>
       <View
-        style={[styles.goBackContainer, {backgroundColor: colors.sonicSilver}]}>
-        <TouchableOpacity
-          style={{padding: 5}}
-          onPress={() => navigation.goBack()}>
-          <Icon size={16} name="chevron-left" style={styles.iconGoBack} />
-        </TouchableOpacity>
-      </View>
-      <ScrollView
-        contentContainerStyle={styles.contentContainerStyle}
-        onScroll={({nativeEvent}) => {
-          handleScroll(nativeEvent);
-        }}>
-        <DisplayImageList data={dataFilter} />
-        <PitchInfomation data={dataFilter} />
-        <Evaluate />
-      </ScrollView>
-      {/* BUTTON ORDER */}
-      <View style={styles.btn_BookingPosotion}>
-        <TouchableOpacity
-          style={styles.btn}
-          onPress={() => {
-            navigation.navigate('BookFootballPitch' as never);
-            dispatch(setIdPitch(dataFilter[0]._id));
-            dispatch(setLocation(dataFilter[0].location));
-            dispatch(setDateTimeBooking(moment().format('L')));
+      //style={styles.arrayImageViewWrap}
+      >
+        <ScrollView
+          horizontal
+          style={{height: HEIGHT * 0.32, width: WIDTH}}
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onScroll={({nativeEvent}) => {
+            onChange(nativeEvent);
           }}>
-          <Text style={styles.textBooking}>Đặt sân ngay</Text>
-        </TouchableOpacity>
+          {imgArray?.map((item: any, index: any): any => {
+            let base64 = `data:image/png;base64,${item.data}`;
+            return (
+              <Image
+                key={index}
+                source={{uri: base64}}
+                resizeMode="cover"
+                style={{height: HEIGHT * 0.32, width: WIDTH}}
+              />
+            );
+          })}
+        </ScrollView>
+        <View style={styles.slideImage}>
+          <Text>
+            {imgActive + 1}/{imgArray.length}
+          </Text>
+        </View>
       </View>
     </View>
   );
 };
-export const styles = StyleSheet.create({
+export default DisplayImageList;
+const styles = StyleSheet.create({
   contentContainerStyle: {
     flexGrow: 1,
   },
   container: {
     flex: 1,
+    backgroundColor: '#F5F5F5',
+    //flexDirection: "column",
+    // position: "relative",
   },
   goBackContainer: {
     alignSelf: 'center',
@@ -121,6 +81,7 @@ export const styles = StyleSheet.create({
     height: 35,
     left: '6%',
     borderRadius: 50,
+    backgroundColor: '#787878',
   },
   Header: {
     backgroundColor: '#fff',
@@ -318,4 +279,3 @@ export const styles = StyleSheet.create({
     color: 'green',
   },
 });
-export default PitchDetail;

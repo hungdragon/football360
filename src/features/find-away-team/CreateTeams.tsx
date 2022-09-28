@@ -40,7 +40,7 @@ const CreateTeams: React.FC<Props> = ({route, navigation}) => {
   const pitchName = useAppSelector(state => state.findPitchState.pitchName);
   const contact = useAppSelector(state => state.loginState.fullName);
   const timeSlot = useAppSelector(state => state.FootballState.timeSlot);
-  const dateTime = useAppSelector(state => state.FootballState.timeBooking);
+  const dateTime = useAppSelector(state => state.FootballState.dateTimeBooking);
   const phoneNumber = useAppSelector(state => state.loginState.phoneNumber);
   const pitchPrice = useAppSelector(state => state.FootballState.PitchPrice);
   const location = useAppSelector(state => state.findPitchState.location);

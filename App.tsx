@@ -1,4 +1,4 @@
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, Theme} from '@react-navigation/native';
 import {IAppPreferenceContext, PreferencesContext} from 'app/context';
 import {store} from 'app/store';
 import {AppDialogProvider} from 'components/dialog/AppDialogContext';
@@ -21,6 +21,7 @@ import {
   navigationContainerRef,
 } from 'utils';
 import API_METHOD from 'constants/api';
+import {getThemeFromName, THEME_NAME} from 'assets/theme';
 export interface IAppPreference {
   themeName: string;
   languageCode: string;
@@ -29,9 +30,9 @@ const App = () => {
   const STRIPE_PUBLISHABLE_KEY = API_METHOD.STRIPE.STRIPE_KEY;
   console.log('KEY-----', config.STRIP_KEY);
   //setTheme for App
-  // const [themeName, setThemeName] = React.useState<string>(
-  //   THEME_NAME.DEFAULT_THEME,
-  // );
+  const [themeName, setThemeName] = React.useState<string>(
+    THEME_NAME.DEFAULT_THEME,
+  );
   //set localize for App
   const [languageCode, setLanguageCode] = React.useState<string>(
     config.DEFAULT_LANGUAGE,
@@ -40,13 +41,13 @@ const App = () => {
     setLanguageCode(code);
     setI18nConfig(code); //viet them cai nay
   };
-  //const theme = getThemeFromName(themeName);
-  // const navigationTheme: Theme = {
-  //   ...theme,
-  //   colors: {
-  //     ...theme.colors,
-  //   },
-  // };
+  const theme = getThemeFromName(themeName);
+  const navigationTheme: Theme = {
+    ...theme,
+    colors: {
+      ...theme.colors,
+    },
+  };
   //Xử lý khi thằng themeName thay đổi
   React.useEffect(() => {
     //xử lý lưu preference của App khi thông tin thay đổi
@@ -54,7 +55,7 @@ const App = () => {
       try {
         //Lưu hết các cấu hình của app trong key này
         const prefString = JSON.stringify({
-          //themeName: themeName,
+          themeName: themeName,
           languageCode: languageCode,
         });
         await setItem(
@@ -81,7 +82,7 @@ const App = () => {
 
         const preferences: IAppPreference = JSON.parse(prefString || '');
         if (preferences) {
-          //  setThemeName(preferences.themeName);
+          setThemeName(preferences.themeName);
           changeLanguageCode(preferences.languageCode);
         }
       } catch (error) {
@@ -100,10 +101,10 @@ const App = () => {
   }, []);
   const preferences = React.useMemo<IAppPreferenceContext>(() => {
     return {
-      // themeName: themeName,
-      // changeTheme: name => {
-      //   setThemeName(name);
-      // },
+      themeName: themeName,
+      changeTheme: name => {
+        setThemeName(name);
+      },
       languageCode: languageCode,
       changeLanguageCode: code => {
         changeLanguageCode(code);
@@ -116,13 +117,13 @@ const App = () => {
       urlScheme="your-url-scheme" // required for 3D Secure and bank redirects
       merchantIdentifier="merchant.com.{{YOUR_APP_NAME}}" // required for Apple Pay
     >
-      <PaperProvider>
+      <PaperProvider theme={theme}>
         <Provider store={store}>
           <MenuProvider style={styles.flex1}>
             <SafeAreaProvider>
               <PreferencesContext.Provider value={preferences}>
                 <NavigationContainer
-                  //theme={navigationTheme}
+                  theme={navigationTheme}
                   ref={navigationContainerRef}>
                   <AppDialogProvider>
                     {/* <AppCommonProvider> */}

@@ -69,10 +69,13 @@ export const FootballApi = {
     });
   },
   football_order(username: string): Promise<any> {
+    const paa = {
+      username: username,
+    };
     return new Promise<any>((resolve, reject) => {
       apiClient
-        .post<any>(API_METHOD.MS_FOOTBALL.FOOTBALL_ORDER, {
-          params: {username: username},
+        .post<any>(API_METHOD.MS_FOOTBALL.FOOTBALL_ORDER, paa, {
+          //params: {username: username},
           timeout: 10 * 1000,
         })
         .then(response => {

@@ -9,23 +9,20 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Buffer} from 'buffer';
 interface Props {
   item: any;
 }
 const PitchItem: React.FC<Props> = ({item}) => {
   const navigation = useNavigation();
-  const base64Image = `data:image/png;base64,${item.image.image.data}`;
+  const base64Image = `data:image/png;base64,${item.image.data}`;
   return (
     <TouchableOpacity
       key={item._id}
-      // style={{ backgroundColor: 'rgba(0, 0, 0, .5)',zIndex:9999}}
       onPress={() => {
         navigation.navigate(
           'FindPitchDetail' as never,
           {id: item._id} as never,
         );
-        //dispatch(setNamePitch(item?.pitchName));
       }}>
       <ImageBackground
         source={{uri: base64Image}}
@@ -40,57 +37,21 @@ const PitchItem: React.FC<Props> = ({item}) => {
           </View>
 
           {item.km == null || undefined ? null : (
-            <Text style={styles.styleKM}>
-              <Text style={styles.txtKM}>{item.km}</Text> km{' '}
-            </Text>
+            <View style={styles.styleKM}>
+              <Text>
+                <Text style={styles.txtKM}>{item.km}</Text> km{' '}
+              </Text>
+            </View>
           )}
         </View>
         <View style={styles.address_block}>
           <View style={styles.address_left}>
-            <Text
-              style={{
-                fontSize: Platform.OS === 'ios' ? 18 : 18,
-                fontWeight: 'bold',
-                color: '#fff',
-                textShadowRadius: 3,
-                textShadowColor: 'black',
-              }}>
-              {item?.pitchName}
-            </Text>
-            <Text
-              style={{
-                color: '#FAFAD2',
-                fontWeight: '800',
-                fontSize: Platform.OS === 'ios' ? 13 : 16,
-                // textShadowRadius: 3,
-                // textShadowColor: 'black',
-                //∂∂∂ textShadowOffset: {width: -1, height: 0},
-                // backgroundColor:'red',
-                //∂∂∂  padding: 2
-              }}>
-              {item?.location}
-            </Text>
+            <Text style={styles.txtPitchName}>{item?.pitchName}</Text>
+            <Text style={styles.txtLocation}>{item?.location}</Text>
           </View>
           <View style={styles.address_right}>
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: 'bold',
-                color: '#00FFFF',
-                textShadowColor: 'black',
-                textShadowRadius: 4,
-                marginHorizontal: 1,
-              }}>
-              Sân cỏ nhân tạo
-            </Text>
-            <Text
-              style={{
-                fontSize: Platform.OS === 'ios' ? 12 : 16,
-                fontWeight: 'bold',
-                color: '#FFD700',
-                textShadowColor: 'black',
-                textShadowRadius: 4,
-              }}>
+            <Text style={styles.txtPitchType}>Sân cỏ nhân tạo</Text>
+            <Text style={styles.txtRangePrice}>
               {`${item?.minPrice} - ${item?.maxPrice}`}
             </Text>
           </View>
@@ -231,5 +192,38 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  txtPitchName: {
+    fontSize: Platform.OS === 'ios' ? 18 : 18,
+    fontWeight: 'bold',
+    color: '#fff',
+    textShadowRadius: 1,
+    textShadowColor: 'black',
+    textShadowOffset: {width: -1, height: 0},
+  },
+  txtLocation: {
+    color: 'yellow',
+    fontWeight: '800',
+    fontSize: Platform.OS === 'ios' ? 13 : 16,
+    textShadowRadius: 1,
+    textShadowColor: 'black',
+    textShadowOffset: {width: -1, height: 0},
+    // backgroundColor:'red',
+    //padding: 2
+  },
+  txtPitchType: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#00FFFF',
+    textShadowColor: 'black',
+    textShadowRadius: 4,
+    marginHorizontal: 1,
+  },
+  txtRangePrice: {
+    fontSize: Platform.OS === 'ios' ? 12 : 16,
+    fontWeight: 'bold',
+    color: '#FFD700',
+    textShadowColor: 'black',
+    textShadowRadius: 4,
   },
 });

@@ -1,12 +1,14 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import moment from 'moment';
 import {FootballTime} from './FootballApi';
 
 export interface typeProps {
-  timeBooking: string;
+  dateTimeBooking: string;
   dayPitch: string;
   id: string;
   code: string;
   comment: string;
+  pitchType: string;
   //   codeDayNow:string;
   FootballTimeData: Array<FootballTime>;
   totalCustomer: string;
@@ -18,19 +20,25 @@ export interface typeProps {
   bayUpData: any;
   reviveData: any;
   marData: any;
-
   statusPayment: string;
-
   codeNamePitch: string;
   idSlot: string;
   isSignFootball: boolean;
+  statusFootball: boolean;
+  fullNameTxt: string;
+  phoneNumberTxt: string;
+
+  loading: boolean;
 }
 const initialState: typeProps = {
-  timeBooking: '',
+  dateTimeBooking: moment().format('L'),
   dayPitch: '',
   comment: '',
+  fullNameTxt: '',
+  phoneNumberTxt: '',
   timeSlot: '',
   PitchPrice: '',
+  pitchType: 'Sân 5',
 
   id: '',
   code: '',
@@ -48,22 +56,25 @@ const initialState: typeProps = {
   codeNamePitch: '',
   idSlot: '',
   isSignFootball: false,
+  statusFootball: false,
+
+  loading: false,
+  
 };
 
 const FootballSlice = createSlice({
   name: 'Football-Information',
   initialState,
   reducers: {
-    setTimeBooking: (state, action: PayloadAction<string>) => {
-      console.log('l--', action.payload);
-      state.timeBooking = action.payload;
+    setDateTimeBooking: (state, action: PayloadAction<string>) => {
+      state.dateTimeBooking = action.payload;
     },
     setCode: (state, action: PayloadAction<string>) => {
       state.code = action.payload;
     },
-    // setCodeDayNow:(state, action:PayloadAction<string>) =>{
-    //     state.codeDayNow=action.payload;
-    // },
+    setPitchType: (state, action: PayloadAction<string>) => {
+      state.pitchType = action.payload;
+    },
     setFootballTimeList: (
       state,
       action: PayloadAction<Array<FootballTime>>,
@@ -117,11 +128,25 @@ const FootballSlice = createSlice({
     setIsSignFootball: (state, action: PayloadAction<boolean>) => {
       state.isSignFootball = action.payload;
     },
+    setStatusFootball: (state, action: PayloadAction<boolean>) => {
+      state.statusFootball = action.payload;
+    },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+    setFullNameTxt: (state, action: PayloadAction<string>) => {
+      state.fullNameTxt = action.payload;
+    },
+    setPhoneNumberTxt: (state, action: PayloadAction<string>) => {
+      state.phoneNumberTxt = action.payload;
+    }
+    
   },
 });
 export const {
-  setTimeBooking,
+  setDateTimeBooking,
   setTimeSlot,
+  setPitchType,
   setPitchPrice,
   setCodeNamePitch,
   setCode,
@@ -137,6 +162,10 @@ export const {
   setMarData,
   setStatusPayment,
   setIdSlot,
-  setIsSignFootball
+  setIsSignFootball,
+  setStatusFootball,
+  setFullNameTxt,
+  setPhoneNumberTxt,
+  setLoading 
 } = FootballSlice.actions;
 export default FootballSlice.reducer;

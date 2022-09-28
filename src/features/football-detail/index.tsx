@@ -10,7 +10,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
-import {useDispatch} from 'react-redux';
+import {batch, useDispatch} from 'react-redux';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import IconAntDesign from 'react-native-vector-icons/AntDesign';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -21,11 +21,15 @@ import {useAppSelector} from 'app/hooks';
 import {image} from 'assets/icons';
 import AppHeader from 'components/AppHeader/AppHeader';
 import {
+  setComment,
+  setFullNameTxt,
   setIdSlot,
+  setPhoneNumberTxt,
   setPitchPrice,
 } from 'features/book-football-pitch/FootballSlice';
 import {useNavigation} from '@react-navigation/native';
 import {HelperText} from 'react-native-paper';
+import AppHideKeyboard from 'components/HideKeyboard/AppHideKeyboard';
 const FootballDetail: React.FC<{route: any}> = ({route}) => {
   const {id, price} = route.params;
   const navigation = useNavigation();
@@ -53,38 +57,37 @@ const FootballDetail: React.FC<{route: any}> = ({route}) => {
     setTxtPhoneNumber(value);
   };
   function next() {
-    dispatch(setPitchPrice(Total.toFixed(3)));
+    batch(() => {
+      dispatch(setPitchPrice(Total.toFixed(3)));
+      dispatch(setFullNameTxt(txtFullName));
+      dispatch(setPhoneNumberTxt(txtPhoneNumber));
+      dispatch(setComment(content));
+    });
     navigation.navigate(
       'Payment' as never,
       {
         id_slotTime: id,
-        pitch_price: Total.toFixed(3),
         timeSlot: timeSlot,
-        fullName: txtFullName,
-        content: content,
-        phoneNumber: txtPhoneNumber,
       } as never,
     );
   }
+  const INPUT_WIDTH = '96%';
   const textErrorPhoneNumber = () => {
-    return !txtPhoneNumber.toString();
+    return !txtPhoneNumber;
   };
   const textErrorPhoneFullName = () => {
     return !txtFullName?.toString();
   };
   return (
-    <View>
-      <StatusBar backgroundColor="green" barStyle="dark-content" />
-      <TouchableWithoutFeedback
-        onPress={() => {
-          Keyboard.dismiss();
-        }}>
+    <>
+      {/* <StatusBar backgroundColor="green" barStyle="dark-content" /> */}
+      <AppHideKeyboard>
         <SafeAreaView>
           <View style={styles.Header}>
             <AppHeader title={pitchName} />
             <View style={styles.text_Date_View}>
               <IconFontAwesome
-                style={{paddingVertical: 5, fontSize: 20}}
+                style={{fontSize: 20}}
                 name="calendar"
                 color="white"
               />
@@ -100,20 +103,13 @@ const FootballDetail: React.FC<{route: any}> = ({route}) => {
                   style={styles.IC_clock}
                 />
                 <Text style={styles.text_timeFootball}>{timeSlot}</Text>
-                <Image
-                  source={image?.Icon_pitch}
-                  style={{width: 30, height: 30}}
-                />
+                <Image source={image?.Icon_pitch} style={styles.iconPitch} />
               </View>
-
               <View style={styles.input_info}>
-                <IconAntDesign
-                  name="user"
-                  style={{fontSize: 18, paddingVertical: 5}}
-                />
+                <IconAntDesign name="user" style={styles.iconUser} />
 
                 <TextInput
-                  style={{width: '96%', paddingHorizontal: 5}}
+                  style={[styles.txtCommonStyle, {width: INPUT_WIDTH}]}
                   onChangeText={val => changeFullName(val)}
                   placeholder="Nhập tên">
                   {txtFullName}
@@ -123,13 +119,10 @@ const FootballDetail: React.FC<{route: any}> = ({route}) => {
                 FullName is invalid!
               </HelperText>
               <View style={styles.input_info}>
-                <IconFontAwesome
-                  name="phone"
-                  style={{fontSize: 18, paddingVertical: 5}}
-                />
+                <IconFontAwesome name="phone" style={styles.iconPhone} />
 
                 <TextInput
-                  style={{width: '96%', paddingHorizontal: 5}}
+                  style={[styles.txtCommonStyle, {width: INPUT_WIDTH}]}
                   onChangeText={val => changePhoneNumber(val)}
                   placeholder="Nhập số điện thoại">
                   {txtPhoneNumber}
@@ -149,18 +142,14 @@ const FootballDetail: React.FC<{route: any}> = ({route}) => {
               <View style={styles.input_info_2}>
                 <View style={styles.input_info_2_1}>
                   <Text>Tiền sân</Text>
-                  <Text style={{fontWeight: 'bold', marginRight: 3}}>
-                    {price}
-                  </Text>
+                  <Text style={styles.txtPrice}>{price}</Text>
                 </View>
                 <View style={styles.input_info_2_1}>
                   <Text style={styles.input_info_2_0}>Được giảm giá</Text>
                   <View style={styles.input_info_2_2}>
-                    <Text style={{marginVertical: 5}}>15.000</Text>
+                    <Text style={styles.txtDiscountPrice}>15.000</Text>
                     <Text style={styles.discount_LINE_STYLE} />
-                    <Text style={{marginVertical: 5, fontWeight: 'bold'}}>
-                      %
-                    </Text>
+                    <Text style={styles.txtPercent}>%</Text>
                   </View>
                 </View>
                 <View style={styles.input_info_2_1}>
@@ -170,9 +159,7 @@ const FootballDetail: React.FC<{route: any}> = ({route}) => {
               </View>
 
               <View>
-                {/* <Text style={styles.btn_ss} onPress={()=>navigation.navigate('NavigationBack',{ix:5})}> ĐẶT SÂN</Text> */}
-
-                {!txtFullName.toString() || !txtPhoneNumber.toString() ? (
+                {!txtFullName.toString() || !txtPhoneNumber?.toString() ? (
                   <View style={[styles.btnView, {backgroundColor: '#e5e5e5'}]}>
                     <Text style={[styles.btn_ss]}>ĐẶT SÂN</Text>
                   </View>
@@ -187,8 +174,8 @@ const FootballDetail: React.FC<{route: any}> = ({route}) => {
             </View>
           </View>
         </SafeAreaView>
-      </TouchableWithoutFeedback>
-    </View>
+      </AppHideKeyboard>
+    </>
   );
 };
 const styles = StyleSheet.create({
@@ -205,11 +192,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginHorizontal: 20,
     borderRadius: 5,
+    alignItems: 'center',
 
     //marginTop: 10,
   },
   text_Date: {
-    height: 30,
     fontSize: Platform.OS === 'ios' ? 16 : 20,
     marginLeft: 5,
     color: 'white',
@@ -227,19 +214,18 @@ const styles = StyleSheet.create({
   },
   body_wrap: {
     marginHorizontal: 10,
-    marginVertical: 10,
+    //marginVertical: 10,
     padding: 5,
   },
   top_block: {
     flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
   },
   text_timeFootball: {
-    fontSize: Platform.OS === 'ios' ? 12 : 15,
+    fontSize: Platform.OS === 'ios' ? 15 : 15,
     color: 'black',
-    marginBottom: 15,
-    //marginVertical: 5,
-    marginVertical: Platform.OS === 'ios' ? 6 : 5,
-    marginEnd: 3,
+    marginHorizontal: 5,
     fontWeight: 'bold',
   },
   input_info: {
@@ -248,7 +234,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 1,
     borderColor: 'grey',
-    marginVertical: 8,
   },
   input_info_area: {
     height: 100,
@@ -257,14 +242,13 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 1,
     borderColor: 'grey',
-    marginVertical: 8,
   },
   input_info_2: {
     padding: 8,
     borderRadius: 5,
     borderWidth: 1,
     borderColor: 'grey',
-    marginVertical: 8,
+    marginVertical: 18,
   },
   input_info_2_0: {
     paddingVertical: 6,
@@ -273,17 +257,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginVertical: 10,
     justifyContent: 'space-between',
-    //alignItems:'flex-start'
     marginEnd: 30,
   },
   input_info_2_2: {
     flexDirection: 'row',
-    //marginVertical:10,
-    // justifyContent:'space-between',
-    //alignItems:'flex-start'
-    //marginEnd:30,
     paddingHorizontal: 6,
-    //paddingVertical:6,
     width: '40%',
     borderRadius: 6,
     borderWidth: 1,
@@ -292,10 +270,6 @@ const styles = StyleSheet.create({
   },
   input_info_2_3: {
     flexDirection: 'row',
-    //marginVertical:10,
-    // justifyContent:'space-between',
-    //alignItems:'flex-start'
-    //marginEnd:30,
     paddingHorizontal: 6,
     paddingVertical: 6,
     width: '40%',
@@ -307,15 +281,13 @@ const styles = StyleSheet.create({
   },
   discount_LINE_STYLE: {
     borderLeftWidth: 1,
-    // borderLeftColor: 'gray',
     backgroundColor: 'gray',
     marginHorizontal: 5,
     textAlign: 'right',
   },
   IC_clock: {
     paddingVertical: 6,
-    fontSize: 20,
-    paddingHorizontal: 3,
+    fontSize: 21,
   },
   btnView: {
     borderRadius: 20,
@@ -324,20 +296,41 @@ const styles = StyleSheet.create({
   },
   btn_ss: {
     justifyContent: 'center',
-    // backgroundColor: 'green',
     color: 'white',
-    // borderRadius: 30,
     paddingVertical: 10,
-
     textAlign: 'center',
-    // marginHorizontal: 60,
-    // marginBottom: 20,
   },
   //back
   backView: {
     flexDirection: 'row',
     marginHorizontal: 15,
     paddingVertical: 10,
+  },
+  iconPitch: {
+    width: 30,
+    height: 30,
+  },
+  iconUser: {
+    fontSize: 18,
+    paddingVertical: 5,
+  },
+  txtCommonStyle: {
+    paddingHorizontal: 5,
+  },
+  iconPhone: {
+    fontSize: 18,
+    paddingVertical: 5,
+  },
+  txtPrice: {
+    fontWeight: 'bold',
+    marginRight: 3,
+  },
+  txtDiscountPrice: {
+    marginVertical: 5,
+  },
+  txtPercent: {
+    marginVertical: 5,
+    fontWeight: 'bold',
   },
 });
 export default FootballDetail;
